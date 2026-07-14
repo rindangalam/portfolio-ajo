@@ -1,58 +1,283 @@
-import { DeployButton } from "@/components/deploy-button";
-import { EnvVarWarning } from "@/components/env-var-warning";
-import { AuthButton } from "@/components/auth-button";
-import { Hero } from "@/components/hero";
-import { ThemeSwitcher } from "@/components/theme-switcher";
-import { ConnectSupabaseSteps } from "@/components/tutorial/connect-supabase-steps";
-import { SignUpUserSteps } from "@/components/tutorial/sign-up-user-steps";
-import { hasEnvVars } from "@/lib/utils";
-import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import { Navbar } from "@/components/navbar";
+import { HeroSchematic } from "@/components/hero-schematic";
+import { ProjectCard } from "@/components/project-card";
+import { StatsSection } from "@/components/stats-section";
+import { BentoAbout } from "@/components/bento-about";
+import { TechMarquee } from "@/components/tech-marquee";
+import { FeaturedShowcase } from "@/components/featured-showcase";
+import { LocationSection } from "@/components/location-section";
+import { ExperienceSection } from "@/components/experience-section";
+import { ContactSection } from "@/components/contact-section";
+import { Footer } from "@/components/footer";
+import { SectionReveal } from "@/components/section-reveal";
+import { SectionDivider } from "@/components/section-divider";
 import { Suspense } from "react";
+
+function HeroSkeleton() {
+  return (
+    <section className="flex min-h-screen flex-col items-center justify-center px-5">
+      <div className="flex flex-col items-center gap-4">
+        <div className="h-10 w-64 skeleton-shimmer rounded-xl" />
+        <div className="h-5 w-48 skeleton-shimmer rounded-xl" />
+      </div>
+    </section>
+  );
+}
+
+function ProjectGridSkeleton() {
+  return (
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="h-64 skeleton-shimmer rounded-xl border border-border" />
+      ))}
+    </div>
+  );
+}
+
+function SectionSkeleton() {
+  return (
+    <div className="px-5 py-20">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-8 flex justify-center">
+          <div className="h-4 w-24 skeleton-shimmer rounded-xl" />
+        </div>
+        <div className="h-48 skeleton-shimmer rounded-xl border border-border" />
+      </div>
+    </div>
+  );
+}
+
+async function ProfileHeroSection() {
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from("profile")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  const { data: socialLinks } = await supabase
+    .from("social_links")
+    .select("platform, url")
+    .order("sort_order", { ascending: true });
+
+  return (
+    <HeroSchematic
+      name={profile?.full_name ?? "Rindang Alam Nur Muhammad"}
+      headline={profile?.headline ?? null}
+      bio={profile?.bio ?? null}
+      avatarUrl={profile?.avatar_url ?? null}
+      location={profile?.location ?? null}
+      email={profile?.email ?? null}
+      phone={profile?.phone ?? null}
+      availableForHire={profile?.available_for_hire ?? false}
+      socialLinks={socialLinks ?? []}
+      resumeUrl={profile?.resume_url ?? null}
+    />
+  );
+}
+
+async function TechMarqueeSection() {
+  const supabase = await createClient();
+  const { data: skills } = await supabase
+    .from("skills")
+    .select("name, category")
+    .order("sort_order", { ascending: true });
+
+  return <TechMarquee skills={skills ?? []} />;
+}
+
+async function ProjectGrid() {
+  const supabase = await createClient();
+  const { data: projects, error } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("is_published", true)
+    .order("sort_order", { ascending: true });
+
+  if (error) {
+    return <p className="text-center text-sm text-red-400">Failed to load projects: {error.message}</p>;
+  }
+
+  if (!projects || projects.length === 0) {
+    return <p className="text-center text-sm text-muted-foreground">No published projects yet.</p>;
+  }
+
+  return (
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+      {projects.map((project, i) => (
+        <ProjectCard key={project.id} project={project} index={i} />
+      ))}
+    </div>
+  );
+}
+
+async function FeaturedShowcaseSection() {
+  const supabase = await createClient();
+  const { data: projects } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("is_published", true)
+    .eq("is_featured", true)
+    .order("sort_order", { ascending: true });
+
+  return <FeaturedShowcase projects={projects ?? []} />;
+}
+
+async function StatsSectionWrapper() {
+  const supabase = await createClient();
+  const [{ count: projectCount }, { count: skillCount }, { data: profile }] = await Promise.all([
+    supabase.from("projects").select("*", { count: "exact", head: true }).eq("is_published", true),
+    supabase.from("skills").select("*", { count: "exact", head: true }),
+    supabase.from("profile").select("available_for_hire").eq("id", 1).single(),
+  ]);
+
+  return (
+    <StatsSection
+      projectCount={projectCount ?? 0}
+      skillCount={skillCount ?? 0}
+      availableForHire={profile?.available_for_hire ?? false}
+    />
+  );
+}
+
+async function BentoAboutSection() {
+  const supabase = await createClient();
+  const [{ data: profile }, { data: skills }] = await Promise.all([
+    supabase.from("profile").select("about_text").eq("id", 1).single(),
+    supabase.from("skills").select("*").order("sort_order", { ascending: true }),
+  ]);
+
+  return <BentoAbout aboutText={profile?.about_text ?? null} skills={skills ?? []} />;
+}
+
+async function LocationSectionWrapper() {
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from("profile")
+    .select("location, available_for_hire")
+    .eq("id", 1)
+    .single();
+
+  return (
+    <LocationSection
+      location={profile?.location ?? null}
+      availableForHire={profile?.available_for_hire ?? false}
+    />
+  );
+}
+
+async function ExperienceSectionWrapper() {
+  const supabase = await createClient();
+  const { data: experiences } = await supabase
+    .from("experiences")
+    .select("*")
+    .order("sort_order", { ascending: true });
+
+  return <ExperienceSection experiences={experiences ?? []} />;
+}
+
+async function ContactSectionWrapper() {
+  const supabase = await createClient();
+  const [{ data: socialLinks }, { data: profile }] = await Promise.all([
+    supabase.from("social_links").select("*").order("sort_order", { ascending: true }),
+    supabase.from("profile").select("email, full_name").eq("id", 1).single(),
+  ]);
+
+  return <ContactSection socialLinks={socialLinks ?? []} email={profile?.email ?? null} />;
+}
+
+async function FooterWrapper() {
+  const supabase = await createClient();
+  const { data: socialLinks } = await supabase
+    .from("social_links")
+    .select("platform, url")
+    .order("sort_order", { ascending: true });
+
+  return <Footer socialLinks={socialLinks ?? []} />;
+}
+
+async function NavbarWrapper() {
+  return <Navbar />;
+}
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center">
-      <div className="flex-1 w-full flex flex-col gap-20 items-center">
-        <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-          <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-            <div className="flex gap-5 items-center font-semibold">
-              <Link href={"/"}>Next.js Supabase Starter</Link>
-              <div className="flex items-center gap-2">
-                <DeployButton />
-              </div>
-            </div>
-            {!hasEnvVars ? (
-              <EnvVarWarning />
-            ) : (
-              <Suspense>
-                <AuthButton />
-              </Suspense>
-            )}
-          </div>
-        </nav>
-        <div className="flex-1 flex flex-col gap-20 max-w-5xl p-5">
-          <Hero />
-          <main className="flex-1 flex flex-col gap-6 px-4">
-            <h2 className="font-medium text-xl mb-4">Next steps</h2>
-            {hasEnvVars ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-          </main>
-        </div>
+    <div className="bg-grid flex min-h-screen flex-col">
+      <Suspense fallback={<nav className="h-16 w-full" />}>
+        <NavbarWrapper />
+      </Suspense>
 
-        <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
-          <p>
-            Powered by{" "}
-            <a
-              href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-              target="_blank"
-              className="font-bold hover:underline"
-              rel="noreferrer"
-            >
-              Supabase
-            </a>
-          </p>
-          <ThemeSwitcher />
-        </footer>
-      </div>
-    </main>
+      <main id="main-content" className="relative z-10 flex-1">
+        <Suspense fallback={<HeroSkeleton />}>
+          <ProfileHeroSection />
+        </Suspense>
+
+        <SectionDivider color="secondary" />
+
+        <Suspense fallback={<SectionSkeleton />}>
+          <TechMarqueeSection />
+        </Suspense>
+
+        <SectionDivider color="secondary" />
+
+        <Suspense fallback={<SectionSkeleton />}>
+          <StatsSectionWrapper />
+        </Suspense>
+
+        <SectionDivider color="secondary" />
+
+        <Suspense fallback={<SectionSkeleton />}>
+          <BentoAboutSection />
+        </Suspense>
+
+        <SectionDivider color="secondary" />
+
+        <Suspense fallback={<SectionSkeleton />}>
+          <FeaturedShowcaseSection />
+        </Suspense>
+
+        <SectionDivider color="secondary" />
+
+        <section id="projects" className="px-5 py-20">
+          <div className="mx-auto max-w-5xl">
+            <SectionReveal>
+              <div className="mb-12 flex items-center justify-center gap-3">
+                <div className="h-px w-8 bg-gradient-to-r from-transparent to-secondary/40" />
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-gradient">
+                  All Projects
+                </span>
+                <div className="h-px w-8 bg-gradient-to-l from-transparent to-secondary/40" />
+              </div>
+            </SectionReveal>
+            <Suspense fallback={<ProjectGridSkeleton />}>
+              <ProjectGrid />
+            </Suspense>
+          </div>
+        </section>
+
+        <SectionDivider color="secondary" />
+
+        <Suspense fallback={<SectionSkeleton />}>
+          <LocationSectionWrapper />
+        </Suspense>
+
+        <SectionDivider color="secondary" />
+
+        <Suspense fallback={<SectionSkeleton />}>
+          <ExperienceSectionWrapper />
+        </Suspense>
+
+        <SectionDivider color="secondary" />
+
+        <Suspense fallback={<SectionSkeleton />}>
+          <ContactSectionWrapper />
+        </Suspense>
+      </main>
+
+      <Suspense fallback={null}>
+        <FooterWrapper />
+      </Suspense>
+    </div>
   );
 }
