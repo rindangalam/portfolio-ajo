@@ -92,7 +92,7 @@ export function HolographicIdCard({
       <div style={{ perspective: "1200px" }} className={isFlipped ? "" : "animate-float"}>
         <motion.div
           ref={cardRef}
-          className="relative w-[420px] cursor-pointer select-none"
+          className="relative w-full max-w-[420px] cursor-pointer select-none"
           style={{
             transformStyle: "preserve-3d",
             rotateX: isFlipped ? 0 : rotateX,
@@ -179,7 +179,7 @@ export function HolographicIdCard({
             />
 
             {/* Card content */}
-            <div className="relative z-20 rounded-2xl bg-background/92 p-6 backdrop-blur-sm">
+            <div className="relative z-20 rounded-2xl bg-background/92 p-4 backdrop-blur-sm sm:p-6">
               {/* Corner brackets */}
               <span className="pointer-events-none absolute left-3 top-3 h-5 w-5 border-l-2 border-t-2 border-secondary/70 transition-all duration-300 group-hover:border-secondary" />
               <span className="pointer-events-none absolute right-3 top-3 h-5 w-5 border-r-2 border-t-2 border-secondary/70 transition-all duration-300 group-hover:border-secondary" />
@@ -190,7 +190,7 @@ export function HolographicIdCard({
                 {/* Avatar with glow ring */}
                 <div className="relative shrink-0">
                   <div
-                    className="h-24 w-24 overflow-hidden rounded-xl border-2 border-secondary/30 bg-card"
+                    className="h-20 w-20 overflow-hidden rounded-xl border-2 border-secondary/30 bg-card sm:h-24 sm:w-24"
                     style={{
                       boxShadow: `0 0 30px ${shadowColor}, 0 0 40px ${shadowColor.replace("0.4", "0.15")}`,
                     }}
@@ -198,7 +198,7 @@ export function HolographicIdCard({
                     {avatarUrl ? (
                       <img src={avatarUrl} alt={name} className="h-full w-full object-cover" />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center font-display text-3xl font-bold text-secondary/40">
+                      <div className="flex h-full w-full items-center justify-center font-display text-2xl font-bold text-secondary/40 sm:text-3xl">
                         {name.charAt(0)}
                       </div>
                     )}
@@ -280,7 +280,7 @@ export function HolographicIdCard({
               }}
             />
 
-            <div className="relative z-20 flex h-full flex-row items-center gap-5 rounded-2xl bg-background/92 p-6 backdrop-blur-sm">
+            <div className="relative z-20 flex h-full flex-row items-center gap-4 rounded-2xl bg-background/92 p-4 backdrop-blur-sm sm:gap-5 sm:p-6">
               {/* Corner brackets */}
               <span className="pointer-events-none absolute left-3 top-3 h-5 w-5 border-l-2 border-t-2 border-secondary/70" />
               <span className="pointer-events-none absolute right-3 top-3 h-5 w-5 border-r-2 border-t-2 border-secondary/70" />

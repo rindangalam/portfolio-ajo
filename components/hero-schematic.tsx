@@ -53,13 +53,13 @@ export function HeroSchematic({
     <section
       ref={sectionRef}
       id="hero"
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-5"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 sm:px-5"
     >
       <GradientMesh />
       <ParticleField particleCount={40} />
 
       <motion.div
-        className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-12 text-center md:flex-row md:text-left"
+        className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-8 text-center md:gap-12 md:flex-row md:text-left"
         style={{ y: contentY, opacity: contentOpacity }}
       >
         {/* Left — Text Content */}
@@ -81,7 +81,7 @@ export function HeroSchematic({
             <MagicText
               text={name ?? "Rindang Alam Nur Muhammad"}
               as="h1"
-              className="font-display text-5xl font-bold text-gradient-animated glow-text md:text-7xl lg:text-8xl"
+              className="font-display text-4xl font-bold text-gradient-animated glow-text sm:text-5xl md:text-7xl lg:text-8xl"
               delay={0.5}
               staggerDelay={0.025}
             />
