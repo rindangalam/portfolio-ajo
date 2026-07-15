@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,20 +17,10 @@ export function Navbar() {
   const [activeSection, setActiveSection] = useState("hero");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
-  const lastScrollY = useRef(0);
 
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const direction = latest > lastScrollY.current ? "down" : "up";
-    const diff = Math.abs(latest - lastScrollY.current);
-
-    if (diff > 10) {
-      setIsHidden(direction === "down" && latest > 100);
-      lastScrollY.current = latest;
-    }
-
     setIsScrolled(latest > 50);
   });
 
@@ -46,12 +36,28 @@ export function Navbar() {
       { rootMargin: "-40% 0px -40% 0px" }
     );
 
-    for (const item of NAV_ITEMS) {
-      const el = document.getElementById(item.id);
-      if (el) observer.observe(el);
-    }
+    const sectionIds = NAV_ITEMS.map((item) => item.id);
+    const observed = new WeakSet<Element>();
 
-    return () => observer.disconnect();
+    const observeSections = () => {
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el && !observed.has(el)) {
+          observer.observe(el);
+          observed.add(el);
+        }
+      }
+    };
+
+    observeSections();
+
+    const mutationObserver = new MutationObserver(observeSections);
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      observer.disconnect();
+      mutationObserver.disconnect();
+    };
   }, []);
 
   return (
@@ -60,8 +66,6 @@ export function Navbar() {
         "fixed left-0 right-0 top-0 z-50 transition-all duration-300",
         isScrolled ? "glass shadow-lg shadow-black/10 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-gradient-to-r after:from-transparent after:via-primary/30 after:to-transparent" : "bg-transparent"
       )}
-      animate={{ y: isHidden ? -100 : 0 }}
-      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
         <a href="#hero" className="font-display text-lg font-bold text-gradient-animated">
@@ -74,19 +78,12 @@ export function Navbar() {
               key={item.id}
               href={`#${item.id}`}
               className={cn(
-                "relative rounded-md px-3 py-1.5 font-mono text-xs transition-colors",
+                "relative rounded-md px-3 py-1.5 font-mono text-xs transition-all",
                 activeSection === item.id
-                   ? "text-secondary"
-                   : "text-muted-foreground hover:text-foreground"
+                  ? "bg-secondary/15 font-semibold text-secondary"
+                  : "text-muted-foreground hover:bg-secondary/5 hover:text-foreground"
               )}
             >
-              {activeSection === item.id && (
-                <motion.div
-                  layoutId="nav-indicator"
-                   className="absolute inset-0 rounded-md bg-secondary/10"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                />
-              )}
               <span className="relative z-10">{item.label}</span>
             </a>
           ))}
@@ -116,10 +113,10 @@ export function Navbar() {
                   href={`#${item.id}`}
                   onClick={() => setIsMobileOpen(false)}
                   className={cn(
-                    "rounded-md px-3 py-2 font-mono text-xs transition-colors",
+                    "rounded-md px-3 py-2 font-mono text-xs transition-all",
                     activeSection === item.id
-                       ? "bg-secondary/10 text-secondary"
-                       : "text-muted-foreground hover:bg-card hover:text-foreground"
+                      ? "bg-secondary/15 font-semibold text-secondary"
+                      : "text-muted-foreground hover:bg-secondary/5 hover:text-foreground"
                   )}
                 >
                   {item.label}

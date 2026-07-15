@@ -19,10 +19,12 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
 
 export function ContactSection({ socialLinks, email }: ContactSectionProps) {
   const [formState, setFormState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormState("sending");
+    setErrorMessage(null);
 
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -43,9 +45,12 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
         form.reset();
         setTimeout(() => setFormState("idle"), 3000);
       } else {
+        const data = await res.json().catch(() => null);
+        setErrorMessage(data?.error || "Something went wrong. Please try again.");
         setFormState("error");
       }
     } catch {
+      setErrorMessage("Network error. Please check your connection.");
       setFormState("error");
     }
   };
@@ -116,14 +121,12 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                     {formState === "sending" ? (
                       <>
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
-                        Sending...
+                        Verifying & Sending...
                       </>
                     ) : formState === "sent" ? (
                       <>
                         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                          <path
-                            d="M5 13l4 4L19 7"
-                          />
+                          <path d="M5 13l4 4L19 7" />
                         </svg>
                         Message Sent!
                       </>
@@ -137,6 +140,12 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                     )}
                   </span>
                 </button>
+
+                {formState === "error" && errorMessage && (
+                  <p className="mt-2 text-center text-xs text-red-400">
+                    {errorMessage}
+                  </p>
+                )}
               </div>
             </form>
           </SectionReveal>
