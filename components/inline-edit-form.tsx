@@ -46,7 +46,7 @@ export function InlineEditForm({ fields, values, action, id }: InlineEditFormPro
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-lg rounded-xl border border-border bg-background p-6">
+      <div className="w-full max-w-lg rounded border border-border bg-background p-6">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-display text-sm font-bold text-foreground">Edit</h3>
           <Button

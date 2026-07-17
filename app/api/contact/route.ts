@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { validateEmail } from "@/lib/email-validator";
-import { sendContactEmail } from "@/lib/mail";
+import { generateToken } from "@/lib/token";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export async function POST(request: Request) {
   try {
@@ -44,22 +45,26 @@ export async function POST(request: Request) {
       );
     }
 
+    const token = generateToken();
+
     const supabase = await createClient();
-    const { error } = await supabase.from("contact_messages").insert({
+    const { error: insertError } = await supabase.from("contact_messages").insert({
       name: name.trim(),
       email: email.trim(),
       message: message.trim(),
+      is_verified: false,
+      verification_token: token,
     });
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (insertError) {
+      return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
-    sendContactEmail({
+    sendVerificationEmail({
       name: name.trim(),
       email: email.trim(),
-      message: message.trim(),
-    }).catch((err) => console.error("Email notification failed:", err));
+      token,
+    }).catch((err) => console.error("Verification email failed:", err));
 
     return NextResponse.json({ success: true });
   } catch {

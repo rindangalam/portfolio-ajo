@@ -16,8 +16,8 @@ async function ProfileData() {
 function ProfileSkeleton() {
   return (
     <div className="space-y-4">
-      <div className="h-8 w-48 skeleton-shimmer rounded-xl" />
-      <div className="h-64 skeleton-shimmer rounded-xl" />
+      <div className="h-8 w-48 skeleton-shimmer rounded" />
+      <div className="h-64 skeleton-shimmer rounded" />
     </div>
   );
 }
@@ -25,7 +25,12 @@ function ProfileSkeleton() {
 export default function AdminProfilePage() {
   return (
     <div>
-      <h1 className="mb-6 font-display text-xl font-bold">Profile Settings</h1>
+      <div className="mb-6">
+        <h1 className="font-display text-xl font-bold">Profile Settings</h1>
+        <p className="mt-1 font-mono text-[10px] text-muted-foreground">
+          Informasi profil yang ditampilkan di portofolio.
+        </p>
+      </div>
       <Suspense fallback={<ProfileSkeleton />}>
         <ProfileData />
       </Suspense>

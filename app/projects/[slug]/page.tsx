@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import { ProjectDetailContent } from "./project-detail-content";
 import { GradientMesh } from "@/components/gradient-mesh";
 import { ParticleField } from "@/components/particle-field";
+import { Footer } from "@/components/footer";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -115,12 +116,24 @@ export default function ProjectDetailPage({ params }: Props) {
         </div>
       </main>
 
-      <footer className="relative z-10 border-t border-border/30 py-12">
-        <div className="h-px bg-gradient-to-r from-transparent via-secondary/40 to-transparent" />
-        <div className="mx-auto max-w-4xl px-5 text-center">
-          <span className="font-mono text-[10px] text-muted-foreground">&copy; 2025 rindang alam nur muhammad</span>
-        </div>
-      </footer>
+      <Suspense fallback={<footer className="relative z-10 border-t border-border/30 py-12" />}>
+        <ProjectFooterWrapper />
+      </Suspense>
     </div>
   );
+}
+
+async function ProjectFooterWrapper() {
+  const supabase = await createClient();
+  let socialLinks: { platform: string; url: string }[] = [];
+  try {
+    const { data } = await supabase
+      .from("social_links")
+      .select("platform, url")
+      .order("sort_order", { ascending: true });
+    if (data) socialLinks = data;
+  } catch {
+    // fallback
+  }
+  return <Footer socialLinks={socialLinks} />;
 }

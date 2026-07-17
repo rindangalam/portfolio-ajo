@@ -15,6 +15,12 @@ const EXP_FIELDS = [
   { name: "sort_order", label: "Order", type: "number" as const },
 ];
 
+function formatDate(dateStr: string) {
+  if (!dateStr) return "—";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+
 async function ExperienceList() {
   const supabase = await createClient();
   const { data: experiences } = await supabase
@@ -23,7 +29,13 @@ async function ExperienceList() {
     .order("sort_order", { ascending: true });
 
   if (!experiences || experiences.length === 0) {
-    return <p className="text-sm text-muted-foreground">No experiences yet.</p>;
+    return (
+      <div className="retro-card rounded p-8 text-center">
+        <p className="font-mono text-xs text-muted-foreground">
+          Belum ada pengalaman kerja. Tambah pengalaman pertama kamu di atas.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -31,13 +43,15 @@ async function ExperienceList() {
       {experiences.map((exp) => (
         <div
           key={exp.id}
-          className="glass flex items-center justify-between rounded-xl p-4"
+          className="retro-card flex items-center justify-between rounded p-4"
         >
-          <div>
-            <span className="font-display text-sm font-semibold">{exp.role}</span>
-            <span className="ml-2 font-mono text-[10px] text-accent">{exp.company}</span>
-            <span className="ml-2 font-mono text-[10px] text-muted-foreground">
-              {exp.start_date} — {exp.is_current ? "Present" : exp.end_date ?? "—"}
+          <div className="flex flex-col gap-0.5">
+            <div className="flex items-center gap-2">
+              <span className="font-display text-sm font-semibold">{exp.role}</span>
+              <span className="font-mono text-[10px] text-accent">{exp.company}</span>
+            </div>
+            <span className="font-mono text-[10px] text-muted-foreground">
+              {formatDate(exp.start_date)} — {exp.is_current ? "Present" : formatDate(exp.end_date)}
             </span>
           </div>
           <div className="flex gap-2">
@@ -67,43 +81,53 @@ async function ExperienceList() {
 export default function ExperiencesPage() {
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="font-display text-xl font-bold">Experiences</h1>
+      <div>
+        <h1 className="font-display text-xl font-bold">Experience</h1>
+        <p className="mt-1 font-mono text-[10px] text-muted-foreground">
+          Riwayat pekerjaan dan pengalaman profesional.
+        </p>
+      </div>
 
-      <form action={createExperience} className="glass rounded-xl p-6 flex flex-col gap-3">
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <Label htmlFor="company" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Company</Label>
-            <Input id="company" name="company" required className="mt-1 h-8 border-border bg-card text-sm" />
+      <div className="retro-card rounded p-5">
+        <h2 className="mb-3 font-display text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Tambah Experience Baru
+        </h2>
+        <form action={createExperience} className="flex flex-col gap-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label htmlFor="company" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Company</Label>
+              <Input id="company" name="company" required className="mt-1 h-8 border-border bg-card text-sm" />
+            </div>
+            <div>
+              <Label htmlFor="role" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Role</Label>
+              <Input id="role" name="role" required className="mt-1 h-8 border-border bg-card text-sm" />
+            </div>
           </div>
           <div>
-            <Label htmlFor="role" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Role</Label>
-            <Input id="role" name="role" required className="mt-1 h-8 border-border bg-card text-sm" />
+            <Label htmlFor="description" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Description</Label>
+            <textarea id="description" name="description" rows={3} className="mt-1 w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground" />
           </div>
-        </div>
-        <div>
-          <Label htmlFor="description" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Description</Label>
-          <textarea id="description" name="description" rows={3} className="mt-1 w-full rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground" />
-        </div>
-        <div className="grid grid-cols-3 gap-3">
-          <div>
-            <Label htmlFor="start_date" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Start Date</Label>
-            <Input id="start_date" name="start_date" type="date" required className="mt-1 h-8 border-border bg-card text-sm" />
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <Label htmlFor="start_date" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Start Date</Label>
+              <Input id="start_date" name="start_date" type="date" required className="mt-1 h-8 border-border bg-card text-sm" />
+            </div>
+            <div>
+              <Label htmlFor="end_date" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">End Date</Label>
+              <Input id="end_date" name="end_date" type="date" className="mt-1 h-8 border-border bg-card text-sm" />
+            </div>
+            <div>
+              <Label htmlFor="sort_order" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Order</Label>
+              <Input id="sort_order" name="sort_order" type="number" defaultValue={0} className="mt-1 h-8 w-16 border-border bg-card text-sm" />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="end_date" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">End Date</Label>
-            <Input id="end_date" name="end_date" type="date" className="mt-1 h-8 border-border bg-card text-sm" />
+          <div className="flex items-center gap-2">
+            <input type="checkbox" id="is_current" name="is_current" className="h-4 w-4" />
+            <Label htmlFor="is_current" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Currently working here</Label>
           </div>
-          <div>
-            <Label htmlFor="sort_order" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Order</Label>
-            <Input id="sort_order" name="sort_order" type="number" defaultValue={0} className="mt-1 h-8 w-16 border-border bg-card text-sm" />
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <input type="checkbox" id="is_current" name="is_current" className="h-4 w-4" />
-          <Label htmlFor="is_current" className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Currently working here</Label>
-        </div>
-        <Button type="submit" className="w-fit bg-accent font-mono text-xs uppercase text-background hover:bg-accent/80">Add Experience</Button>
-      </form>
+          <Button type="submit" className="w-fit bg-accent font-mono text-xs uppercase text-background hover:bg-accent/80">Add Experience</Button>
+        </form>
+      </div>
 
       <Suspense fallback={<p className="text-sm text-muted-foreground">Loading...</p>}>
         <ExperienceList />

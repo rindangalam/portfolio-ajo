@@ -3,8 +3,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ArrowDown, Download, Github, Linkedin, Twitter, Mail } from "lucide-react";
-import { GradientMesh } from "@/components/gradient-mesh";
-import { ParticleField } from "@/components/particle-field";
 import { MagicText } from "@/components/magic-text";
 import { HolographicIdCard } from "@/components/holographic-id-card";
 
@@ -24,6 +22,7 @@ interface HeroSchematicProps {
   email: string | null;
   phone: string | null;
   availableForHire: boolean;
+  statusText: string;
   socialLinks: { platform: string; url: string }[];
   resumeUrl: string | null;
 }
@@ -37,6 +36,7 @@ export function HeroSchematic({
   email,
   phone,
   availableForHire,
+  statusText,
   socialLinks,
   resumeUrl,
 }: HeroSchematicProps) {
@@ -55,9 +55,6 @@ export function HeroSchematic({
       id="hero"
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 sm:px-5"
     >
-      <GradientMesh />
-      <ParticleField particleCount={40} />
-
       <motion.div
         className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-8 text-center md:gap-12 md:flex-row md:text-left"
         style={{ y: contentY, opacity: contentOpacity }}
@@ -68,20 +65,20 @@ export function HeroSchematic({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-secondary/5 px-4 py-1.5"
+            className="mb-6 inline-flex items-center gap-2 retro-border rounded px-4 py-1.5"
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
             </span>
-            <span className="font-mono text-xs text-secondary">Available for hire</span>
+            <span className="font-mono text-xs text-secondary">{statusText}</span>
           </motion.div>
 
           <div className="mb-6">
             <MagicText
               text={name ?? "Rindang Alam Nur Muhammad"}
               as="h1"
-              className="font-display text-4xl font-bold text-gradient-animated glow-text sm:text-5xl md:text-7xl lg:text-8xl"
+              className="font-display text-4xl font-bold text-gradient-animated glow-text animate-flicker sm:text-5xl md:text-7xl lg:text-8xl"
               delay={0.5}
               staggerDelay={0.025}
             />
@@ -109,7 +106,7 @@ export function HeroSchematic({
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-all duration-300 hover:border-secondary/40 hover:bg-secondary/10 hover:text-secondary"
+                className="flex h-9 w-9 items-center justify-center retro-border bg-card text-muted-foreground transition-all duration-300 hover:border-secondary/60 hover:text-secondary"
               >
                 {SOCIAL_ICONS[link.platform] ?? (
                   <span className="font-mono text-[8px] uppercase">{link.platform.slice(0, 2)}</span>
@@ -140,8 +137,7 @@ export function HeroSchematic({
                 href={resumeUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] px-6 py-3 font-display text-sm font-bold text-background transition-all hover:shadow-[0_0_30px_hsl(var(--primary)/0.4)] hover:brightness-110 active:scale-[0.98]"
-                style={{ animation: "gradient-shift 4s ease infinite" }}
+                className="inline-flex items-center gap-2 retro-card-bevel rounded px-6 py-3 font-display text-sm font-bold text-primary transition-all hover:shadow-[4px_4px_0px_hsl(var(--primary)/0.4),0_0_20px_hsl(var(--primary)/0.15)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
               >
                 <Download className="h-4 w-4" />
                 Download CV

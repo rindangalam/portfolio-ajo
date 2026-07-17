@@ -18,8 +18,9 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
 };
 
 export function ContactSection({ socialLinks, email }: ContactSectionProps) {
-  const [formState, setFormState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [formState, setFormState] = useState<"idle" | "sending" | "sent" | "verify" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [submittedEmail, setSubmittedEmail] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,6 +29,8 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
 
     const form = e.currentTarget;
     const formData = new FormData(form);
+    const emailValue = formData.get("email") as string;
+    setSubmittedEmail(emailValue);
 
     try {
       const res = await fetch("/api/contact", {
@@ -35,15 +38,14 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.get("name"),
-          email: formData.get("email"),
+          email: emailValue,
           message: formData.get("message"),
         }),
       });
 
       if (res.ok) {
-        setFormState("sent");
+        setFormState("verify");
         form.reset();
-        setTimeout(() => setFormState("idle"), 3000);
       } else {
         const data = await res.json().catch(() => null);
         setErrorMessage(data?.error || "Something went wrong. Please try again.");
@@ -73,7 +75,27 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
 
         <div className="grid gap-8 lg:grid-cols-2">
           <SectionReveal direction="left">
-            <form onSubmit={handleSubmit} className="glass rounded-2xl p-8 shadow-[0_0_60px_hsl(var(--primary)/0.08)]">
+            <form onSubmit={handleSubmit} className="retro-card rounded p-8">
+              {formState === "verify" ? (
+                <div className="flex flex-col items-center gap-4 py-8 text-center">
+                  <div className="text-4xl">📧</div>
+                  <h3 className="font-display text-lg font-bold text-foreground">
+                    Check Your Email
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    We sent a confirmation link to{" "}
+                    <span className="text-secondary">{submittedEmail}</span>.
+                    Click the link to verify your message.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setFormState("idle")}
+                    className="mt-2 font-mono text-xs text-muted-foreground underline transition-colors hover:text-secondary"
+                  >
+                    Send another message
+                  </button>
+                </div>
+              ) : (
               <div className="space-y-4">
                 <div>
                   <label className="mb-1 block font-mono text-xs text-muted-foreground">
@@ -147,17 +169,18 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                   </p>
                 )}
               </div>
+              )}
             </form>
           </SectionReveal>
 
           <SectionReveal direction="right" delay={0.15}>
             <div className="flex flex-col justify-center gap-6">
-              <div className="glass rounded-2xl p-8">
+              <div className="retro-card rounded p-8">
                 <h3 className="mb-4 font-display text-lg font-bold text-foreground">
                   Let&apos;s Connect
                 </h3>
                 <p className="mb-6 text-sm text-muted-foreground">
-                  Feel free to reach out for collaborations or just a friendly hello!
+                  Open for project collaborations, web development orders, or just a friendly chat. Let&apos;s work together!
                   {email && (
                     <>
                       <br />
@@ -177,7 +200,7 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                       href={link.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-all duration-300 hover:border-primary/40 hover:bg-gradient-to-br hover:from-primary/20 hover:to-secondary/20 hover:text-primary hover:shadow-[0_0_15px_hsl(var(--primary)/0.2)]"
+                      className="flex h-10 w-10 items-center justify-center retro-border bg-card text-muted-foreground transition-all duration-300 hover:border-primary/60 hover:text-primary"
                     >
                       {SOCIAL_ICONS[link.platform] ?? (
                         <span className="font-mono text-[10px] uppercase">
@@ -189,7 +212,7 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                 </div>
               </div>
 
-              <div className="glass rounded-2xl p-6">
+              <div className="retro-card rounded p-6">
                 <div className="flex items-center gap-3">
                   <span className="relative flex h-3 w-3">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />

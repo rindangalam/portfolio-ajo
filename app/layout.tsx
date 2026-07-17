@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { VT323, Inter, JetBrains_Mono } from "next/font/google";
 import { CustomCursor } from "@/components/custom-cursor";
 import { ScrollProgress } from "@/components/scroll-progress";
 import "./globals.css";
@@ -13,13 +13,16 @@ export const metadata: Metadata = {
   title: "Rindang Alam Nur Muhammad — Fullstack Developer",
   description:
     "Fullstack developer specializing in connecting systems. Building with Next.js, Supabase, Python, and more.",
+  icons: {
+    icon: "/favicon",
+  },
 };
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const vt323 = VT323({
+  variable: "--font-vt323",
   display: "swap",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["400"],
 });
 
 const inter = Inter({
@@ -44,7 +47,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable} font-body antialiased`}
+        className={`${vt323.variable} ${inter.variable} ${jetbrainsMono.variable} font-body antialiased`}
       >
         <a
           href="#main-content"
@@ -54,6 +57,7 @@ export default function RootLayout({
         </a>
         <ScrollProgress />
         <CustomCursor />
+        <div className="crt-overlay pointer-events-none fixed inset-0 z-30" />
         {children}
       </body>
     </html>

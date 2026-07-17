@@ -7,9 +7,11 @@ import { MapPin, Clock, Briefcase } from "lucide-react";
 interface LocationSectionProps {
   location: string | null;
   availableForHire: boolean;
+  statusText: string;
+  statusBusyText: string;
 }
 
-export function LocationSection({ location, availableForHire }: LocationSectionProps) {
+export function LocationSection({ location, availableForHire, statusText, statusBusyText }: LocationSectionProps) {
   const [currentTime, setCurrentTime] = useState<string>("");
 
   useEffect(() => {
@@ -32,11 +34,11 @@ export function LocationSection({ location, availableForHire }: LocationSectionP
     <section className="relative px-5 py-16">
       <div className="mx-auto max-w-3xl">
         <SectionReveal>
-          <div className="glass rounded-2xl p-8">
+          <div className="retro-card rounded p-8">
             <div className="grid gap-6 md:grid-cols-3">
               {/* Location */}
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-secondary/20 bg-secondary/10">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center retro-border bg-card">
                   <MapPin className="h-4 w-4 text-secondary" />
                 </div>
                 <div>
@@ -51,7 +53,7 @@ export function LocationSection({ location, availableForHire }: LocationSectionP
 
               {/* Time */}
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-accent/20 bg-accent/10">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center retro-border bg-card">
                   <Clock className="h-4 w-4 text-accent" />
                 </div>
                 <div>
@@ -66,7 +68,7 @@ export function LocationSection({ location, availableForHire }: LocationSectionP
 
               {/* Availability */}
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cat-language/20 bg-cat-language/10">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center retro-border bg-card">
                   <Briefcase className="h-4 w-4 text-cat-language" />
                 </div>
                 <div>
@@ -81,7 +83,7 @@ export function LocationSection({ location, availableForHire }: LocationSectionP
                       </span>
                     )}
                     <p className="font-display text-sm font-semibold text-foreground">
-                      {availableForHire ? "Open to work" : "Currently busy"}
+                      {availableForHire ? statusText : statusBusyText}
                     </p>
                   </div>
                 </div>

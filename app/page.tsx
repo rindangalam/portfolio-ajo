@@ -11,7 +11,7 @@ import { ExperienceSection } from "@/components/experience-section";
 import { ContactSection } from "@/components/contact-section";
 import { Footer } from "@/components/footer";
 import { SectionReveal } from "@/components/section-reveal";
-import { SectionDivider } from "@/components/section-divider";
+import { PageBackground } from "@/components/page-background";
 import { Suspense } from "react";
 
 function HeroSkeleton() {
@@ -71,6 +71,7 @@ async function ProfileHeroSection() {
       email={profile?.email ?? null}
       phone={profile?.phone ?? null}
       availableForHire={profile?.available_for_hire ?? false}
+      statusText={profile?.status_text ?? "Available for hire"}
       socialLinks={socialLinks ?? []}
       resumeUrl={profile?.resume_url ?? null}
     />
@@ -129,7 +130,7 @@ async function StatsSectionWrapper() {
   const [{ count: projectCount }, { count: skillCount }, { data: profile }] = await Promise.all([
     supabase.from("projects").select("*", { count: "exact", head: true }).eq("is_published", true),
     supabase.from("skills").select("*", { count: "exact", head: true }),
-    supabase.from("profile").select("available_for_hire").eq("id", 1).single(),
+    supabase.from("profile").select("available_for_hire, status_text, status_busy_text").eq("id", 1).single(),
   ]);
 
   return (
@@ -137,6 +138,8 @@ async function StatsSectionWrapper() {
       projectCount={projectCount ?? 0}
       skillCount={skillCount ?? 0}
       availableForHire={profile?.available_for_hire ?? false}
+      statusText={profile?.status_text ?? "Open"}
+      statusBusyText={profile?.status_busy_text ?? "Busy"}
     />
   );
 }
@@ -155,7 +158,7 @@ async function LocationSectionWrapper() {
   const supabase = await createClient();
   const { data: profile } = await supabase
     .from("profile")
-    .select("location, available_for_hire")
+    .select("location, available_for_hire, status_text, status_busy_text")
     .eq("id", 1)
     .single();
 
@@ -163,6 +166,8 @@ async function LocationSectionWrapper() {
     <LocationSection
       location={profile?.location ?? null}
       availableForHire={profile?.available_for_hire ?? false}
+      statusText={profile?.status_text ?? "Open to work"}
+      statusBusyText={profile?.status_busy_text ?? "Currently busy"}
     />
   );
 }
@@ -188,13 +193,18 @@ async function ContactSectionWrapper() {
 }
 
 async function FooterWrapper() {
-  const supabase = await createClient();
-  const { data: socialLinks } = await supabase
-    .from("social_links")
-    .select("platform, url")
-    .order("sort_order", { ascending: true });
-
-  return <Footer socialLinks={socialLinks ?? []} />;
+  let socialLinks: { platform: string; url: string }[] = [];
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("social_links")
+      .select("platform, url")
+      .order("sort_order", { ascending: true });
+    if (data) socialLinks = data;
+  } catch {
+    // fallback — render footer anyway
+  }
+  return <Footer socialLinks={socialLinks} />;
 }
 
 async function NavbarWrapper() {
@@ -208,36 +218,28 @@ export default function Home() {
         <NavbarWrapper />
       </Suspense>
 
+      <PageBackground />
+
       <main id="main-content" className="relative z-10 flex-1">
         <Suspense fallback={<HeroSkeleton />}>
           <ProfileHeroSection />
         </Suspense>
 
-        <SectionDivider color="secondary" />
-
         <Suspense fallback={<SectionSkeleton />}>
           <TechMarqueeSection />
         </Suspense>
-
-        <SectionDivider color="secondary" />
 
         <Suspense fallback={<SectionSkeleton />}>
           <StatsSectionWrapper />
         </Suspense>
 
-        <SectionDivider color="secondary" />
-
         <Suspense fallback={<SectionSkeleton />}>
           <BentoAboutSection />
         </Suspense>
 
-        <SectionDivider color="secondary" />
-
         <Suspense fallback={<SectionSkeleton />}>
           <FeaturedShowcaseSection />
         </Suspense>
-
-        <SectionDivider color="secondary" />
 
         <section id="projects" className="px-5 py-20">
           <div className="mx-auto max-w-5xl">
@@ -256,26 +258,20 @@ export default function Home() {
           </div>
         </section>
 
-        <SectionDivider color="secondary" />
-
         <Suspense fallback={<SectionSkeleton />}>
           <LocationSectionWrapper />
         </Suspense>
 
-        <SectionDivider color="secondary" />
-
         <Suspense fallback={<SectionSkeleton />}>
           <ExperienceSectionWrapper />
         </Suspense>
-
-        <SectionDivider color="secondary" />
 
         <Suspense fallback={<SectionSkeleton />}>
           <ContactSectionWrapper />
         </Suspense>
       </main>
 
-      <Suspense fallback={null}>
+      <Suspense fallback={<footer className="relative z-10 border-t border-border/30 py-12" />}>
         <FooterWrapper />
       </Suspense>
     </div>

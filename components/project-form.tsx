@@ -136,7 +136,7 @@ export function ProjectForm({ initialData, action, submitLabel }: ProjectFormPro
       </div>
 
       {/* Image Upload */}
-      <div className="rounded-lg border border-border bg-card p-4">
+      <div className="rounded border border-border bg-card p-4">
         <ImageUploader
           bucket="projects"
           currentUrl={initialData?.image_url}
@@ -148,7 +148,7 @@ export function ProjectForm({ initialData, action, submitLabel }: ProjectFormPro
       </div>
 
       {/* Screenshots Upload */}
-      <div className="rounded-lg border border-border bg-card p-4">
+      <div className="rounded border border-border bg-card p-4">
         <MultiImageUploader
           bucket="projects"
           currentUrls={initialData?.screenshots}

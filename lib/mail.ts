@@ -75,3 +75,65 @@ export async function sendContactEmail({ name, email, message }: SendContactEmai
     return { success: false, error };
   }
 }
+
+interface SendVerificationEmailParams {
+  name: string;
+  email: string;
+  token: string;
+}
+
+export async function sendVerificationEmail({ name, email, token }: SendVerificationEmailParams) {
+  const client = getResend();
+  if (!client) {
+    console.warn("RESEND_API_KEY not set — skipping verification email");
+    return { success: false, error: "Email service not configured" };
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const verifyUrl = `${baseUrl}/api/contact/verify?token=${token}`;
+
+  const html = `
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0a0e17; color: #e2e8f0; border-radius: 16px; overflow: hidden;">
+      <div style="background: linear-gradient(135deg, #065f46, #0d9488, #065f46); padding: 32px; text-align: center;">
+        <h1 style="color: white; font-size: 24px; margin: 0; font-weight: 700;">Confirm Your Message</h1>
+        <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin-top: 8px;">Hi ${name}, please confirm that you sent this message.</p>
+      </div>
+
+      <div style="padding: 32px;">
+        <p style="font-size: 15px; line-height: 1.7; margin-bottom: 24px;">
+          We received a message from you through my portfolio contact form. 
+          To ensure it's really you and deliver it to me, please confirm by clicking the button below:
+        </p>
+
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="${verifyUrl}" style="display: inline-block; background: linear-gradient(135deg, #065f46, #0d9488); color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+            Confirm My Message
+          </a>
+        </div>
+
+        <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">
+          If you didn't send this message, you can safely ignore this email. 
+          The link will expire and the message will not be delivered.
+        </p>
+      </div>
+
+      <div style="padding: 16px 32px; text-align: center; color: #64748b; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.05);">
+        If the button doesn't work, copy and paste this link into your browser:<br/>
+        <span style="color: #0d9488;">${verifyUrl}</span>
+      </div>
+    </div>
+  `;
+
+  try {
+    await client.emails.send({
+      from: "Portfolio <onboarding@resend.dev>",
+      to: email,
+      subject: `Confirm your message — Portfolio`,
+      html,
+    });
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to send verification email:", error);
+    return { success: false, error };
+  }
+}

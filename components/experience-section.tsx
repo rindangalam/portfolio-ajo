@@ -52,7 +52,7 @@ function TimelineItem({ exp, index }: { exp: Experience; index: number }) {
         <div className="w-px flex-1 bg-gradient-to-b from-primary/30 via-secondary/30 to-accent/30" />
       </div>
 
-      <div className={cn("glass mb-6 flex-1 rounded-xl p-6 border-l-2 border-l-transparent", exp.is_current && "border-l-accent")}>
+      <div className={cn("retro-card rounded mb-6 flex-1 p-6 border-l-2 border-l-transparent", exp.is_current && "border-l-accent")}>
         <div className="mb-1 flex flex-wrap items-center gap-2">
           <h3 className="font-display text-base font-bold text-gradient">
             {exp.role}

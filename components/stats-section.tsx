@@ -7,6 +7,8 @@ interface StatsSectionProps {
   projectCount: number;
   skillCount: number;
   availableForHire: boolean;
+  statusText: string;
+  statusBusyText: string;
 }
 
 function AnimatedCounter({ value, label, delay }: { value: number; label: string; delay: number }) {
@@ -38,18 +40,18 @@ function AnimatedCounter({ value, label, delay }: { value: number; label: string
   );
 }
 
-export function StatsSection({ projectCount, skillCount, availableForHire }: StatsSectionProps) {
+export function StatsSection({ projectCount, skillCount, availableForHire, statusText, statusBusyText }: StatsSectionProps) {
   return (
     <section id="stats" className="relative px-5 py-20">
       <div className="mx-auto max-w-5xl">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="glass gradient-border rounded-2xl p-8">
+          <div className="retro-card rounded p-6">
             <AnimatedCounter value={projectCount} label="Projects" delay={0} />
           </div>
-          <div className="glass gradient-border rounded-2xl p-8">
+          <div className="retro-card rounded p-6">
             <AnimatedCounter value={skillCount} label="Skills" delay={0.1} />
           </div>
-          <div className="glass gradient-border rounded-2xl flex items-center justify-center p-8">
+          <div className="retro-card rounded flex items-center justify-center p-6">
             <div className="text-center">
               <div className="relative inline-flex items-center gap-2">
                 {availableForHire && (
@@ -59,7 +61,7 @@ export function StatsSection({ projectCount, skillCount, availableForHire }: Sta
                   </span>
                 )}
                 <span className="font-display text-lg font-bold text-accent">
-                  {availableForHire ? "Open" : "Busy"}
+                  {availableForHire ? statusText : statusBusyText}
                 </span>
               </div>
               <p className="mt-2 font-mono text-xs uppercase tracking-wider text-muted-foreground">

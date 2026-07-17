@@ -39,9 +39,10 @@ export async function createProject(formData: FormData) {
     is_published: formData.get("is_published") === "on",
   });
   if (error) throw new Error(error.message);
+  revalidatePath("/admin/projects");
   revalidatePath("/admin");
   revalidatePath("/");
-  redirect("/admin");
+  redirect("/admin/projects");
 }
 
 export async function updateProject(id: string, formData: FormData) {
@@ -64,9 +65,10 @@ export async function updateProject(id: string, formData: FormData) {
     })
     .eq("id", id);
   if (error) throw new Error(error.message);
+  revalidatePath("/admin/projects");
   revalidatePath("/admin");
   revalidatePath("/");
-  redirect("/admin");
+  redirect("/admin/projects");
 }
 
 export async function deleteProject(id: string) {
@@ -253,6 +255,8 @@ export async function updateProfile(formData: FormData) {
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
       available_for_hire: formData.get("available_for_hire") === "on",
+      status_text: formData.get("status_text") as string,
+      status_busy_text: formData.get("status_busy_text") as string,
       resume_url: formData.get("resume_url") as string,
     })
     .eq("id", 1);
