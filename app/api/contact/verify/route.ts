@@ -37,11 +37,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/verify?status=error", request.url));
   }
 
-  sendContactEmail({
+  const emailResult = await sendContactEmail({
     name: message.name,
     email: message.email,
     message: message.message,
-  }).catch((err) => console.error("Admin notification failed:", err));
+  });
+
+  if (!emailResult.success) {
+    console.error("Admin notification failed:", emailResult.error);
+  }
 
   return NextResponse.redirect(new URL("/verify?status=success", request.url));
 }

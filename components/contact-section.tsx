@@ -87,6 +87,14 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                     <span className="text-secondary">{submittedEmail}</span>.
                     Click the link to verify your message.
                   </p>
+                  <a
+                    href="https://mail.google.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 font-mono text-xs font-semibold text-background transition-colors hover:bg-accent/80"
+                  >
+                    Open Gmail
+                  </a>
                   <button
                     type="button"
                     onClick={() => setFormState("idle")}
@@ -153,7 +161,7 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                         Message Sent!
                       </>
                     ) : formState === "error" ? (
-                      "Error — Try Again"
+                      "Try Again"
                     ) : (
                       <>
                         Send Message
@@ -164,9 +172,11 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                 </button>
 
                 {formState === "error" && errorMessage && (
-                  <p className="mt-2 text-center text-xs text-red-400">
-                    {errorMessage}
-                  </p>
+                  <div className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-center">
+                    <p className="font-mono text-xs text-red-400">
+                      ⚠️ {errorMessage}
+                    </p>
+                  </div>
                 )}
               </div>
               )}

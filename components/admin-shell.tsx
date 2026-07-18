@@ -53,6 +53,12 @@ const NAV_SECTIONS: NavSection[] = [
       { label: "Messages", href: "/admin/contacts", icon: <MessageSquare className="h-4 w-4" /> },
     ],
   },
+  {
+    title: "Links",
+    items: [
+      { label: "View Site", href: "/", icon: <ExternalLink className="h-4 w-4" /> },
+    ],
+  },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
@@ -120,17 +126,6 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             </div>
           ))}
         </nav>
-
-        {/* Sidebar footer */}
-        <div className="border-t border-border/50 p-3">
-          <Link
-            href="/"
-            className="flex items-center gap-3 rounded-md px-3 py-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground transition-colors hover:bg-accent/5 hover:text-secondary"
-          >
-            <ExternalLink className="h-3.5 w-3.5" />
-            View Site
-          </Link>
-        </div>
       </aside>
 
       {/* Main area */}

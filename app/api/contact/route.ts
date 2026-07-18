@@ -60,11 +60,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
-    sendVerificationEmail({
+    const verificationResult = await sendVerificationEmail({
       name: name.trim(),
       email: email.trim(),
       token,
-    }).catch((err) => console.error("Verification email failed:", err));
+    });
+
+    if (!verificationResult.success) {
+      await supabase.from("contact_messages").delete().eq("verification_token", token);
+
+      return NextResponse.json(
+        { error: "Failed to send verification email. Please try again." },
+        { status: 500 },
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch {

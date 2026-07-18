@@ -25,7 +25,8 @@ async function AdminStats() {
     supabase
       .from("contact_messages")
       .select("*", { count: "exact", head: true })
-      .eq("is_read", false),
+      .eq("is_read", false)
+      .eq("is_verified", true),
   ]);
 
   const stats = [
@@ -57,6 +58,7 @@ async function RecentMessages() {
   const { data: messages } = await supabase
     .from("contact_messages")
     .select("*")
+    .eq("is_verified", true)
     .order("created_at", { ascending: false })
     .limit(3);
 
@@ -80,6 +82,9 @@ async function RecentMessages() {
             {!msg.is_read && (
               <span className="shrink-0 rounded-full bg-accent/15 px-1.5 py-0.5 font-mono text-[8px] uppercase text-accent">New</span>
             )}
+            <span className={`shrink-0 rounded-full px-1.5 py-0.5 font-mono text-[8px] uppercase ${msg.is_verified ? "bg-green-500/15 text-green-400" : "bg-yellow-500/15 text-yellow-400"}`}>
+              {msg.is_verified ? "Verified" : "Pending"}
+            </span>
           </div>
           <p className="mt-1 truncate font-mono text-[10px] text-muted-foreground">{msg.message}</p>
         </div>
