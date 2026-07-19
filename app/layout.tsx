@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon",
   },
+  verification: {
+    google: "i5Wga6kNdEUz4YPE9LLMAAoZYgQeSJbY5APksD5Q_Ns",
+  },
 };
 
 const vt323 = VT323({
