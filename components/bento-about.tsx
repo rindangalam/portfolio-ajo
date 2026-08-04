@@ -53,9 +53,9 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
           </div>
         </SectionReveal>
 
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:grid-rows-2">
-          {/* Bio — large card spanning 2 cols */}
-          <SectionReveal className="col-span-2" direction="up">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {/* Bio — full-width card at top */}
+          <SectionReveal className="col-span-2 md:col-span-4" direction="up">
             <GlowCard glowColor="hsl(85, 60%, 55%)" className="!p-6 h-full">
               <h3 className="mb-3 font-display text-lg font-bold text-foreground">
                 Who I Am
@@ -71,7 +71,7 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
             <SectionReveal key={category} direction="up" delay={0.1 * (i + 1)} className="transition-transform duration-200 hover:scale-[1.02]">
               <GlowCard
                 glowColor={CATEGORY_COLORS[category] ?? CATEGORY_COLORS.other}
-                className="!p-4 h-full"
+                className="!p-4"
               >
                 <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                   {CATEGORY_LABELS[category] ?? category}
@@ -95,8 +95,25 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
             </SectionReveal>
           ))}
 
-          {/* Total skills — large card */}
-          <SectionReveal className="col-span-2" direction="up" delay={0.3}>
+          {/* Remaining categories */}
+          {categories.slice(3).map(([category, categorySkills], i) => (
+            <SectionReveal key={category} direction="up" delay={0.1 * (i + 4)} className="transition-transform duration-200 hover:scale-[1.02]">
+              <GlowCard
+                glowColor={CATEGORY_COLORS[category] ?? CATEGORY_COLORS.other}
+                className="!p-4"
+              >
+                <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {CATEGORY_LABELS[category] ?? category}
+                </p>
+                <p className="font-display text-2xl font-bold text-gradient">
+                  {categorySkills.length}
+                </p>
+              </GlowCard>
+            </SectionReveal>
+          ))}
+
+          {/* Total skills — full-width card at bottom */}
+          <SectionReveal className="col-span-2 md:col-span-4" direction="up" delay={0.6}>
             <GlowCard glowColor="hsl(200, 85%, 60%)" className="!p-6 h-full gradient-border">
               <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                 Total Skills
@@ -121,23 +138,6 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
               </div>
             </GlowCard>
           </SectionReveal>
-
-          {/* Remaining categories */}
-          {categories.slice(3).map(([category, categorySkills], i) => (
-            <SectionReveal key={category} direction="up" delay={0.1 * (i + 4)} className="transition-transform duration-200 hover:scale-[1.02]">
-              <GlowCard
-                glowColor={CATEGORY_COLORS[category] ?? CATEGORY_COLORS.other}
-                className="!p-4 h-full"
-              >
-                <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                  {CATEGORY_LABELS[category] ?? category}
-                </p>
-                <p className="font-display text-2xl font-bold text-gradient">
-                  {categorySkills.length}
-                </p>
-              </GlowCard>
-            </SectionReveal>
-          ))}
         </div>
       </div>
     </section>
