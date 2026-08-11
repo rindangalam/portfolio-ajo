@@ -112,18 +112,18 @@ export function HolographicIdCard({
         >
           {/* === FRONT FACE === */}
           <div
-            className={`card-face relative overflow-hidden rounded-2xl p-[2px] ${isFlipped ? "pointer-events-none" : ""}`}
+            className={`card-face relative overflow-hidden rounded p-[2px] ${isFlipped ? "pointer-events-none" : ""}`}
             style={{
               backfaceVisibility: "hidden",
               WebkitBackfaceVisibility: "hidden",
             }}
           >
             {/* Animated glow border */}
-            <div className="absolute inset-0 rounded-2xl border-glow-animate" />
+            <div className="absolute inset-0 rounded border-glow-animate" />
 
             {/* Holographic sheen — subtle brand colors */}
             <div
-              className="pointer-events-none absolute inset-0 z-10 rounded-2xl mix-blend-soft-light"
+              className="pointer-events-none absolute inset-0 z-10 rounded mix-blend-soft-light"
               style={{
                 background: `conic-gradient(from ${hueShift + 120}deg at ${mousePos.x * 100}% ${mousePos.y * 100}%, 
                   hsla(140, 60%, 60%, 0.3), 
@@ -137,7 +137,7 @@ export function HolographicIdCard({
 
             {/* Holographic scanlines */}
             <div
-              className="pointer-events-none absolute inset-0 z-10 rounded-2xl"
+              className="pointer-events-none absolute inset-0 z-10 rounded"
               style={{
                 background: `repeating-linear-gradient(
                   0deg,
@@ -154,7 +154,7 @@ export function HolographicIdCard({
 
             {/* Subtle white highlight band */}
             <div
-              className="pointer-events-none absolute inset-0 z-10 rounded-2xl"
+              className="pointer-events-none absolute inset-0 z-10 rounded"
               style={{
                 backgroundImage: `linear-gradient(${135 + hueShift}deg, 
                   transparent 20%, 
@@ -179,7 +179,7 @@ export function HolographicIdCard({
             />
 
             {/* Card content */}
-            <div className="relative z-20 rounded-2xl bg-background/92 p-4 backdrop-blur-sm sm:p-6">
+            <div className="relative z-20 rounded bg-background/92 p-4 backdrop-blur-sm sm:p-6">
               {/* Corner brackets */}
               <span className="pointer-events-none absolute left-3 top-3 h-5 w-5 border-l-2 border-t-2 border-secondary/70 transition-all duration-300 group-hover:border-secondary" />
               <span className="pointer-events-none absolute right-3 top-3 h-5 w-5 border-r-2 border-t-2 border-secondary/70 transition-all duration-300 group-hover:border-secondary" />
@@ -259,7 +259,7 @@ export function HolographicIdCard({
 
           {/* === BACK FACE === */}
           <div
-            className={`card-face absolute inset-0 overflow-hidden rounded-2xl p-[2px] ${isFlipped ? "pointer-events-auto" : "pointer-events-none"}`}
+            className={`card-face absolute inset-0 overflow-hidden rounded p-[2px] ${isFlipped ? "pointer-events-auto" : "pointer-events-none"}`}
             style={{
               backfaceVisibility: "hidden",
               WebkitBackfaceVisibility: "hidden",
@@ -267,11 +267,11 @@ export function HolographicIdCard({
             }}
           >
             {/* Animated glow border (back) */}
-            <div className="absolute inset-0 rounded-2xl border-glow-animate" />
+            <div className="absolute inset-0 rounded border-glow-animate" />
 
             {/* Scanlines on back too */}
             <div
-              className="pointer-events-none absolute inset-0 z-10 rounded-2xl"
+              className="pointer-events-none absolute inset-0 z-10 rounded"
               style={{
                 background: `repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)`,
                 backgroundSize: "100% 200%",
@@ -280,7 +280,7 @@ export function HolographicIdCard({
               }}
             />
 
-            <div className="relative z-20 flex h-full flex-row items-center gap-4 rounded-2xl bg-background/92 p-4 backdrop-blur-sm sm:gap-5 sm:p-6">
+            <div className="relative z-20 flex h-full flex-row items-center gap-4 rounded bg-background/92 p-4 backdrop-blur-sm sm:gap-5 sm:p-6">
               {/* Corner brackets */}
               <span className="pointer-events-none absolute left-3 top-3 h-5 w-5 border-l-2 border-t-2 border-secondary/70" />
               <span className="pointer-events-none absolute right-3 top-3 h-5 w-5 border-r-2 border-t-2 border-secondary/70" />
