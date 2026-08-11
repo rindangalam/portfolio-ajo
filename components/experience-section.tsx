@@ -39,14 +39,14 @@ function TimelineItem({ exp, index }: { exp: Experience; index: number }) {
       <div className="flex flex-col items-center">
         <div
           className={cn(
-            "h-3 w-3 rounded-full border-2",
+            "h-3 w-3 rounded border-2",
             exp.is_current
               ? "border-accent bg-accent shadow-[0_0_12px_hsl(var(--accent)/0.5)]"
               : "border-border bg-card"
           )}
         >
           {exp.is_current && (
-            <span className="absolute inset-0 animate-pulse-ring rounded-full bg-accent/30" />
+            <span className="absolute inset-0 animate-pulse-ring rounded bg-accent/30" />
           )}
         </div>
         <div className="w-px flex-1 bg-gradient-to-b from-primary/30 via-secondary/30 to-accent/30" />
