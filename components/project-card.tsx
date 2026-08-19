@@ -37,7 +37,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <Link href={`/projects/${project.slug}`} className="group block">
-        <GlowCard className="!p-0 overflow-hidden transition-all duration-300 group-hover:border-primary/30">
+        <GlowCard className="overflow-hidden transition-all duration-300 group-hover:border-primary/30" contentClassName="p-0">
           <div className="h-[2px] w-full bg-gradient-to-r from-primary via-secondary to-accent" />
           {project.image_url && (
             <div className="relative h-44 overflow-hidden">

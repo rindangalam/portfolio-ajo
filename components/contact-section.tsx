@@ -144,7 +144,7 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                 <button
                   type="submit"
                   disabled={formState === "sending"}
-                  className="group relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] px-6 py-3 font-display text-sm font-bold text-background transition-all duration-300 hover:shadow-[0_0_30px_hsl(var(--primary)/0.4)] hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
+                  className="group relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] px-6 py-3 font-display text-sm font-bold text-background transition-all duration-500 ease-premium hover:shadow-[0_0_30px_hsl(var(--primary)/0.4)] hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
                   style={{ animation: "gradient-shift 4s ease infinite" }}
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
@@ -158,14 +158,16 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M5 13l4 4L19 7" />
                         </svg>
-                        Message Sent!
+                        Message Sent
                       </>
                     ) : formState === "error" ? (
                       "Try Again"
                     ) : (
                       <>
+                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-background/15 transition-transform duration-500 ease-premium group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-105">
+                          <Send className="h-4 w-4" />
+                        </span>
                         Send Message
-                        <Send className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                       </>
                     )}
                   </span>

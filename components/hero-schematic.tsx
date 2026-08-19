@@ -137,9 +137,11 @@ export function HeroSchematic({
                 href={resumeUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 retro-card-bevel rounded px-6 py-3 font-display text-sm font-bold text-primary transition-all hover:shadow-[4px_4px_0px_hsl(var(--primary)/0.4),0_0_20px_hsl(var(--primary)/0.15)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
+                className="group inline-flex items-center gap-2 retro-card-bevel rounded px-6 py-3 font-display text-sm font-bold text-primary transition-all duration-500 ease-premium hover:shadow-[4px_4px_0px_hsl(var(--primary)/0.4),0_0_20px_hsl(var(--primary)/0.15)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
               >
-                <Download className="h-4 w-4" />
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/15 transition-transform duration-500 ease-premium group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105">
+                  <Download className="h-4 w-4" />
+                </span>
                 Download CV
               </a>
             )}

@@ -56,7 +56,7 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {/* Bio — full-width card at top */}
           <SectionReveal className="col-span-2 md:col-span-4" direction="up">
-            <GlowCard glowColor="hsl(85, 60%, 55%)" className="!p-6 h-full">
+            <GlowCard glowColor="hsl(85, 60%, 55%)" className="h-full" contentClassName="p-6 h-full">
               <h3 className="mb-3 font-display text-lg font-bold text-foreground">
                 Who I Am
               </h3>
@@ -71,7 +71,7 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
             <SectionReveal key={category} direction="up" delay={0.1 * (i + 1)} className="transition-transform duration-200 hover:scale-[1.02]">
               <GlowCard
                 glowColor={CATEGORY_COLORS[category] ?? CATEGORY_COLORS.other}
-                className="!p-4"
+                contentClassName="p-4 h-full"
               >
                 <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                   {CATEGORY_LABELS[category] ?? category}
@@ -100,7 +100,7 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
             <SectionReveal key={category} direction="up" delay={0.1 * (i + 4)} className="transition-transform duration-200 hover:scale-[1.02]">
               <GlowCard
                 glowColor={CATEGORY_COLORS[category] ?? CATEGORY_COLORS.other}
-                className="!p-4"
+                contentClassName="p-4 h-full"
               >
                 <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                   {CATEGORY_LABELS[category] ?? category}
@@ -114,7 +114,7 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
 
           {/* Total skills — full-width card at bottom */}
           <SectionReveal className="col-span-2 md:col-span-4" direction="up" delay={0.6}>
-            <GlowCard glowColor="hsl(200, 85%, 60%)" className="!p-6 h-full gradient-border">
+            <GlowCard glowColor="hsl(200, 85%, 60%)" className="h-full gradient-border" contentClassName="p-6 h-full">
               <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                 Total Skills
               </p>

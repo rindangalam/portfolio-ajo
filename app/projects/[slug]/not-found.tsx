@@ -16,8 +16,11 @@ export default function ProjectNotFound() {
         </p>
         <Link
           href="/projects"
-          className="mt-8 inline-flex items-center gap-2 retro-card-bevel rounded px-6 py-3 font-display text-sm font-bold text-primary transition-all hover:shadow-[4px_4px_0px_hsl(var(--primary)/0.4),0_0_20px_hsl(var(--primary)/0.15)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
+          className="group inline-flex items-center gap-2 retro-card-bevel rounded px-6 py-3 font-display text-sm font-bold text-primary transition-all duration-500 ease-premium hover:shadow-[4px_4px_0px_hsl(var(--primary)/0.4),0_0_20px_hsl(var(--primary)/0.15)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
         >
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/15 font-mono text-[10px] text-muted-foreground transition-transform duration-500 ease-premium group-hover:translate-x-0.5 group-hover:scale-105">
+            ls
+          </span>
           view all projects
         </Link>
       </div>

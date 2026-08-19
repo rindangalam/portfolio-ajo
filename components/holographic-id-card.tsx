@@ -89,14 +89,15 @@ export function HolographicIdCard({
       transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
       className="flex justify-center"
     >
-      <div style={{ perspective: "1200px" }} className={isFlipped ? "" : "animate-float"}>
-        <motion.div
-          ref={cardRef}
-          className="relative w-full max-w-[420px] cursor-pointer select-none"
-          style={{
-            transformStyle: "preserve-3d",
-            rotateX: isFlipped ? 0 : rotateX,
-          }}
+      <div className="bezel-shell">
+        <div style={{ perspective: "1200px" }} className={isFlipped ? "" : "animate-float"}>
+          <motion.div
+            ref={cardRef}
+            className="relative w-full max-w-[420px] cursor-pointer select-none"
+            style={{
+              transformStyle: "preserve-3d",
+              rotateX: isFlipped ? 0 : rotateX,
+            }}
           animate={{
             rotateY: isFlipped ? 180 : rotateY.get(),
           }}
@@ -384,6 +385,7 @@ export function HolographicIdCard({
             }}
           />
         </motion.div>
+      </div>
       </div>
     </motion.div>
   );

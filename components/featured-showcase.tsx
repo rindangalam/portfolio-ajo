@@ -85,7 +85,7 @@ function FeaturedProjectCard({
       {/* Image */}
       <div className={reversed ? "md:order-2" : ""}>
         <Link href={`/projects/${project.slug}`} className="group block">
-          <div className="group/image relative overflow-hidden rounded border border-border bg-card transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_30px_hsl(var(--primary)/0.1)]">
+          <div className="group/image relative overflow-hidden rounded border border-border bg-card transition-all duration-500 ease-premium hover:border-primary/30 hover:shadow-[0_0_30px_hsl(var(--primary)/0.1)]">
             {project.image_url ? (
               isVideo(project.image_url) ? (
                 <video

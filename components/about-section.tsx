@@ -65,6 +65,7 @@ export function AboutSection({ aboutText, skills }: AboutSectionProps) {
                       <GlowCard
                         key={skill.id}
                         glowColor={CATEGORY_COLORS[skill.category] ?? CATEGORY_COLORS.other}
+                        bezel={false}
                         className="!p-3"
                       >
                         <div className="flex items-center gap-3">
