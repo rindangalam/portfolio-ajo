@@ -4,8 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-function parseCommaSeperated(raw: string) {
-  return raw
+function parseCommaSeperated(raw: string | null) {
+  return (raw ?? "")
     .split(",")
     .map((t) => t.trim())
     .filter(Boolean);

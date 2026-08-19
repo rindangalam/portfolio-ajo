@@ -85,13 +85,23 @@ export function ProjectForm({ initialData, action, submitLabel }: ProjectFormPro
         formData.set("screenshots", JSON.stringify(screenshots));
         formData.set(
           "sections",
-          JSON.stringify(sections.filter((s) => s.content.trim() || s.heading.trim()))
+          JSON.stringify(
+            sections.filter(
+              (s) => (s.content ?? "").trim() || (s.heading ?? "").trim()
+            )
+          )
         );
-        formData.set("highlights", JSON.stringify(highlights.map((h) => h.trim()).filter(Boolean)));
-        formData.set("challenges", JSON.stringify(challenges.map((c) => c.trim()).filter(Boolean)));
+        formData.set(
+          "highlights",
+          JSON.stringify(highlights.map((h) => (h ?? "").trim()).filter(Boolean))
+        );
+        formData.set(
+          "challenges",
+          JSON.stringify(challenges.map((c) => (c ?? "").trim()).filter(Boolean))
+        );
         formData.set(
           "tech_details",
-          JSON.stringify(techDetails.filter((t) => t.name.trim()))
+          JSON.stringify(techDetails.filter((t) => (t.name ?? "").trim()))
         );
         await action(formData);
       }}
@@ -116,7 +126,7 @@ export function ProjectForm({ initialData, action, submitLabel }: ProjectFormPro
       </div>
 
       {/* Tab: Basic Info */}
-      {tab === "basic" && (
+      <div className={tab === "basic" ? "" : "hidden"}>
         <div className="flex flex-col gap-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
@@ -197,10 +207,10 @@ export function ProjectForm({ initialData, action, submitLabel }: ProjectFormPro
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Tab: Story */}
-      {tab === "story" && (
+      <div className={tab === "story" ? "" : "hidden"}>
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <Label className={labelClass}>Story Sections (markdown)</Label>
@@ -365,10 +375,10 @@ export function ProjectForm({ initialData, action, submitLabel }: ProjectFormPro
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Tab: Stack */}
-      {tab === "stack" && (
+      <div className={tab === "stack" ? "" : "hidden"}>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <Label htmlFor="tech_stack" className={labelClass}>
@@ -441,10 +451,10 @@ export function ProjectForm({ initialData, action, submitLabel }: ProjectFormPro
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Tab: Media */}
-      {tab === "media" && (
+      <div className={tab === "media" ? "" : "hidden"}>
         <div className="flex flex-col gap-4">
           <div className="rounded border border-border bg-card p-4">
             <ImageUploader
@@ -468,10 +478,10 @@ export function ProjectForm({ initialData, action, submitLabel }: ProjectFormPro
             />
           </div>
         </div>
-      )}
+      </div>
 
       {/* Tab: Publish */}
-      {tab === "publish" && (
+      <div className={tab === "publish" ? "" : "hidden"}>
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
@@ -503,7 +513,7 @@ export function ProjectForm({ initialData, action, submitLabel }: ProjectFormPro
             {submitLabel}
           </Button>
         </div>
-      )}
+      </div>
     </form>
   );
 }
