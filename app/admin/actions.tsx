@@ -11,6 +11,16 @@ function parseCommaSeperated(raw: string) {
     .filter(Boolean);
 }
 
+function parseJsonArray(raw: string | null): unknown[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 function parseScreenshots(raw: string | null): string[] {
   if (!raw) return [];
   try {
@@ -35,6 +45,13 @@ export async function createProject(formData: FormData) {
     live_url: formData.get("live_url") as string,
     image_url: formData.get("image_url") as string,
     screenshots: parseScreenshots(formData.get("screenshots") as string),
+    role: (formData.get("role") as string) || null,
+    duration: (formData.get("duration") as string) || null,
+    year: Number(formData.get("year")) || null,
+    highlights: parseJsonArray(formData.get("highlights") as string),
+    challenges: parseJsonArray(formData.get("challenges") as string),
+    sections: parseJsonArray(formData.get("sections") as string),
+    tech_details: parseJsonArray(formData.get("tech_details") as string),
     is_featured: formData.get("is_featured") === "on",
     is_published: formData.get("is_published") === "on",
   });
@@ -59,6 +76,13 @@ export async function updateProject(id: string, formData: FormData) {
       live_url: formData.get("live_url") as string,
       image_url: formData.get("image_url") as string,
       screenshots: parseScreenshots(formData.get("screenshots") as string),
+      role: (formData.get("role") as string) || null,
+      duration: (formData.get("duration") as string) || null,
+      year: Number(formData.get("year")) || null,
+      highlights: parseJsonArray(formData.get("highlights") as string),
+      challenges: parseJsonArray(formData.get("challenges") as string),
+      sections: parseJsonArray(formData.get("sections") as string),
+      tech_details: parseJsonArray(formData.get("tech_details") as string),
       is_featured: formData.get("is_featured") === "on",
       is_published: formData.get("is_published") === "on",
       updated_at: new Date().toISOString(),

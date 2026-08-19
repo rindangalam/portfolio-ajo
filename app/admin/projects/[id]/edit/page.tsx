@@ -31,6 +31,13 @@ async function EditForm({ params }: { params: Promise<{ id: string }> }) {
         live_url: project!.live_url ?? "",
         image_url: project!.image_url ?? null,
         screenshots: project!.screenshots ?? [],
+        role: project!.role ?? "",
+        duration: project!.duration ?? "",
+        year: project!.year ?? null,
+        highlights: project!.highlights ?? [],
+        challenges: project!.challenges ?? [],
+        sections: project!.sections ?? [],
+        tech_details: project!.tech_details ?? [],
         is_featured: project!.is_featured ?? false,
         is_published: project!.is_published ?? false,
       }}
