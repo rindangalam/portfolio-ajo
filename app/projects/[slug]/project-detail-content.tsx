@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Github, ExternalLink, ArrowRight } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { SectionReveal } from "@/components/section-reveal";
 import { ScreenshotLightbox } from "@/components/screenshot-lightbox";
 
@@ -61,6 +63,7 @@ export function ProjectDetailContent({
 }: ProjectDetailContentProps) {
   const techDetails = project.tech_details ?? [];
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const hasLinks = Boolean(project.repo_url || project.live_url);
 
   return (
     <>
@@ -69,20 +72,34 @@ export function ProjectDetailContent({
         currentIndex={lightboxIndex}
         onClose={() => setLightboxIndex(null)}
         onNavigate={setLightboxIndex}
-      />      {/* Hero Section — split layout */}
+      />
+
+      {/* Hero Section — split layout */}
       <SectionReveal>
-        <div className="mb-10 flex flex-col gap-8 md:flex-row md:items-start">
+        <div className="mb-12 flex flex-col gap-8 md:flex-row md:items-start">
           {/* Left — Info */}
           <div className="flex-1">
-            {project.is_featured && (
-              <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary shadow-[0_0_15px_hsl(var(--primary)/0.2)] animate-glow-pulse">
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Featured
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              {project.is_featured && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary shadow-[0_0_15px_hsl(var(--primary)/0.2)] animate-glow-pulse">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  Featured
+                </span>
+              )}
+              <span className="font-mono text-[10px] uppercase tracking-widest text-secondary">
+                Project Overview
               </span>
-            )}
+            </div>
+
             <h1 className="font-display text-2xl font-bold text-gradient md:text-3xl">
               {project.title}
             </h1>
+
+            {project.description && (
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                {project.description}
+              </p>
+            )}
 
             {project.tech_stack && project.tech_stack.length > 0 && (
               <div className="mt-5 flex flex-wrap gap-2">
@@ -123,12 +140,6 @@ export function ProjectDetailContent({
                 </a>
               )}
             </div>
-
-            {(project.long_description ?? project.description) && (
-              <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-                {project.long_description ?? project.description}
-              </p>
-            )}
           </div>
 
           {/* Right — Hero Image / Video */}
@@ -137,14 +148,15 @@ export function ProjectDetailContent({
               {isVideo(project.image_url) ? (
                 <video
                   src={project.image_url}
-                  className="w-full rounded-lg object-contain"
+                  className="aspect-video w-full rounded-lg border border-border object-cover"
                   controls
+                  preload="metadata"
                 />
               ) : (
                 <img
                   src={project.image_url}
                   alt={project.title}
-                  className="w-full rounded-lg object-contain"
+                  className="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_0_30px_hsl(var(--primary)/0.08)]"
                 />
               )}
             </div>
@@ -152,18 +164,36 @@ export function ProjectDetailContent({
         </div>
       </SectionReveal>
 
+      {/* Story — Markdown long description */}
+      {(project.long_description ?? project.description) && (
+        <>
+          <div className="mb-12 h-px bg-gradient-to-r from-transparent via-secondary/20 to-transparent" />
+          <SectionReveal>
+            <div className="mb-12">
+              <h2 className="mb-5 font-mono text-xs uppercase tracking-widest text-secondary">
+                The Story
+              </h2>
+              <MarkdownContent content={project.long_description ?? project.description ?? ""} />
+            </div>
+          </SectionReveal>
+        </>
+      )}
+
       {/* Tech Stack Details */}
       {techDetails.length > 0 && (
         <>
           <div className="mb-12 h-px bg-gradient-to-r from-transparent via-secondary/20 to-transparent" />
           <SectionReveal>
             <div className="mb-12">
-<h2 className="mb-5 font-mono text-xs uppercase tracking-widest text-secondary">
-              Tech Stack Details
+              <h2 className="mb-5 font-mono text-xs uppercase tracking-widest text-secondary">
+                Tech Stack Details
               </h2>
               <div className="grid gap-3 md:grid-cols-2">
-                {techDetails.map((td) => (
-                  <div key={td.name} className="glass rounded-xl p-5 transition-colors hover:border-primary/20">
+                {techDetails.map((td, i) => (
+                  <div key={td.name} className="glass relative rounded-xl p-5 transition-colors hover:border-primary/20">
+                    <span className="pointer-events-none absolute -right-2 -top-4 select-none font-display text-5xl font-bold leading-none text-foreground/[0.06]">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
                     <h3 className="font-display text-sm font-semibold text-foreground">{td.name}</h3>
                     <p className="mt-1 font-mono text-[10px] text-primary">{td.role}</p>
                     {td.note && <p className="mt-2 text-xs text-muted-foreground">{td.note}</p>}
@@ -184,7 +214,7 @@ export function ProjectDetailContent({
               <h2 className="mb-5 font-mono text-xs uppercase tracking-widest text-accent">
                 Screenshots
               </h2>
-              <div className="grid gap-3 md:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {screenshots.map((src, i) => (
                   <ScreenshotThumb key={i} src={src} index={i} onClick={() => setLightboxIndex(i)} />
                 ))}
@@ -192,6 +222,44 @@ export function ProjectDetailContent({
             </div>
           </SectionReveal>
         </>
+      )}
+
+      {/* Closing CTA */}
+      {hasLinks && (
+        <SectionReveal>
+          <div className="glass mb-12 flex flex-col items-center gap-4 rounded-xl border-border/50 px-6 py-8 text-center md:flex-row md:justify-between md:text-left">
+            <div>
+              <h2 className="font-display text-lg font-bold text-foreground">
+                Interested in this project?
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Explore the code or see it running live.
+              </p>
+            </div>
+            <div className="flex shrink-0 gap-3">
+              {project.repo_url && (
+                <a
+                  href={project.repo_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 font-mono text-xs text-primary transition-all hover:bg-primary/20 hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)]"
+                >
+                  <Github size={14} /> Repository
+                </a>
+              )}
+              {project.live_url && (
+                <a
+                  href={project.live_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-4 py-2.5 font-mono text-xs text-accent transition-all hover:bg-accent/20 hover:shadow-[0_0_25px_hsl(var(--accent)/0.2)]"
+                >
+                  <ExternalLink size={14} /> Live Demo
+                </a>
+              )}
+            </div>
+          </div>
+        </SectionReveal>
       )}
 
       {/* Prev/Next Navigation */}
@@ -238,6 +306,14 @@ export function ProjectDetailContent({
   );
 }
 
+function MarkdownContent({ content }: { content: string }) {
+  return (
+    <div className="prose-sm max-w-none space-y-4 text-sm leading-relaxed text-muted-foreground [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4 [&_h2]:font-display [&_h2]:text-base [&_h2]:font-bold [&_h2]:text-foreground [&_h3]:font-display [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:my-1 [&_code]:rounded [&_code]:bg-card [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[11px] [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:border [&_pre]:border-border [&_pre]:bg-card [&_pre]:p-4 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_blockquote]:border-l-2 [&_blockquote]:border-primary/40 [&_blockquote]:pl-4 [&_blockquote]:italic [&_hr]:border-border [&_table]:w-full [&_th]:border [&_th]:border-border [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_td]:border [&_td]:border-border [&_td]:px-3 [&_td]:py-2]">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+    </div>
+  );
+}
+
 function ScreenshotThumb({ src, index, onClick }: { src: string; index: number; onClick: () => void }) {
   return (
     <button
@@ -248,7 +324,7 @@ function ScreenshotThumb({ src, index, onClick }: { src: string; index: number; 
       {isVideo(src) ? (
         <video
           src={src}
-          className="max-h-[200px] w-full object-contain"
+          className="max-h-[180px] w-full object-contain"
           controls
           preload="metadata"
         />
@@ -256,7 +332,7 @@ function ScreenshotThumb({ src, index, onClick }: { src: string; index: number; 
         <img
           src={src}
           alt={`Screenshot ${index + 1}`}
-          className="max-h-[200px] w-full object-contain transition-transform duration-300 group-hover:scale-105"
+          className="max-h-[180px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
       )}
     </button>
