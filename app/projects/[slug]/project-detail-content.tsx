@@ -78,6 +78,7 @@ export function ProjectDetailContent({
   const storySections = project.sections ?? [];
   const techStack = project.tech_stack ?? [];
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [slideIndex, setSlideIndex] = useState(0);
   const hasLinks = Boolean(project.repo_url || project.live_url);
   const hasMeta = Boolean(project.role || project.duration || project.year);
   const hasRail = hasMeta || hasLinks || techStack.length > 0 || highlights.length > 0;
@@ -358,52 +359,78 @@ export function ProjectDetailContent({
                   <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-accent">
                     Screenshots
                   </h2>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {screenshots.map((src, i) => (
-                      <ScreenshotThumb key={i} src={src} index={i} onClick={() => setLightboxIndex(i)} />
-                    ))}
+
+                  <div className="relative overflow-hidden rounded-lg border border-border bg-background">
+                    {isVideo(screenshots[slideIndex]) ? (
+                      <video
+                        src={screenshots[slideIndex]}
+                        className="aspect-video w-full object-contain"
+                        controls
+                        preload="metadata"
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setLightboxIndex(slideIndex)}
+                        className="group block w-full cursor-zoom-in text-left"
+                        aria-label={`Open screenshot ${slideIndex + 1} fullscreen`}
+                      >
+                        <img
+                          src={screenshots[slideIndex]}
+                          alt={`Screenshot ${slideIndex + 1}`}
+                          className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
+                        />
+                      </button>
+                    )}
+
+                    {screenshots.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSlideIndex((i) => (i - 1 + screenshots.length) % screenshots.length)
+                          }
+                          className="glass absolute left-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-muted-foreground transition-colors hover:text-primary"
+                          aria-label="Previous screenshot"
+                        >
+                          <ArrowLeft size={16} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSlideIndex((i) => (i + 1) % screenshots.length)}
+                          className="glass absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-muted-foreground transition-colors hover:text-accent"
+                          aria-label="Next screenshot"
+                        >
+                          <ArrowRight size={16} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="font-mono text-[10px] text-muted-foreground">
+                      {String(slideIndex + 1).padStart(2, "0")} /{" "}
+                      {String(screenshots.length).padStart(2, "0")}
+                    </span>
+                    {screenshots.length > 1 && (
+                      <div className="flex gap-1.5">
+                        {screenshots.map((_, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => setSlideIndex(i)}
+                            aria-label={`Go to screenshot ${i + 1}`}
+                            className={`h-1.5 w-5 rounded-full transition-colors ${
+                              i === slideIndex ? "bg-accent" : "bg-border hover:bg-muted-foreground/40"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </SectionReveal>
             </>
-          )}
-
-          {/* Closing CTA */}
-          {hasLinks && (
-            <SectionReveal>
-              <div className="glass mb-12 flex flex-col items-center gap-4 rounded-xl border-border/50 px-6 py-8 text-center md:flex-row md:justify-between md:text-left">
-                <div>
-                  <h2 className="font-display text-lg font-bold text-foreground">
-                    Interested in this project?
-                  </h2>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Explore the code or see it running live.
-                  </p>
-                </div>
-                <div className="flex shrink-0 gap-3">
-                  {project.repo_url && (
-                    <a
-                      href={project.repo_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 font-mono text-xs text-primary transition-all hover:bg-primary/20 hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)]"
-                    >
-                      <Github size={14} /> Repository
-                    </a>
-                  )}
-                  {project.live_url && (
-                    <a
-                      href={project.live_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-4 py-2.5 font-mono text-xs text-accent transition-all hover:bg-accent/20 hover:shadow-[0_0_25px_hsl(var(--accent)/0.2)]"
-                    >
-                      <ExternalLink size={14} /> Live Demo
-                    </a>
-                  )}
-                </div>
-              </div>
-            </SectionReveal>
           )}
         </div>
       </div>
@@ -457,30 +484,5 @@ function MarkdownContent({ content }: { content: string }) {
     <div className="prose-sm max-w-none space-y-4 text-sm leading-relaxed text-muted-foreground [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4 [&_h2]:font-display [&_h2]:text-base [&_h2]:font-bold [&_h2]:text-foreground [&_h3]:font-display [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:text-foreground [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:my-1 [&_code]:rounded [&_code]:bg-card [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[11px] [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:border [&_pre]:border-border [&_pre]:bg-card [&_pre]:p-4 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_blockquote]:border-l-2 [&_blockquote]:border-primary/40 [&_blockquote]:pl-4 [&_blockquote]:italic [&_hr]:border-border [&_table]:w-full [&_th]:border [&_th]:border-border [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_td]:border [&_td]:border-border [&_td]:px-3 [&_td]:py-2]">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
     </div>
-  );
-}
-
-function ScreenshotThumb({ src, index, onClick }: { src: string; index: number; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group cursor-pointer overflow-hidden rounded-lg border border-border bg-background text-left transition-all hover:border-primary/30 hover:shadow-[0_0_20px_hsl(var(--primary)/0.1)]"
-    >
-      {isVideo(src) ? (
-        <video
-          src={src}
-          className="max-h-[180px] w-full object-contain"
-          controls
-          preload="metadata"
-        />
-      ) : (
-        <img
-          src={src}
-          alt={`Screenshot ${index + 1}`}
-          className="max-h-[180px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-      )}
-    </button>
   );
 }
