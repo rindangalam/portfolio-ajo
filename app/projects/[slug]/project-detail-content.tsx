@@ -122,23 +122,96 @@ export function ProjectDetailContent({
           )}
         </div>
 
-        {/* Hero Image — full width */}
-        {project.image_url && (
+        {/* Hero Gallery — screenshots slider, fallback to thumbnail */}
+        {(screenshots.length > 0 || project.image_url) && (
           <div className="mb-12">
-            {isVideo(project.image_url) ? (
-              <video
-                src={project.image_url}
-                className="aspect-video w-full rounded-lg border border-border object-cover"
-                controls
-                preload="metadata"
-              />
-            ) : (
-              <img
-                src={project.image_url}
-                alt={project.title}
-                className="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_0_30px_hsl(var(--primary)/0.08)]"
-              />
-            )}
+            {screenshots.length > 0 ? (
+              <>
+                <div className="relative overflow-hidden rounded-lg border border-border bg-background shadow-[0_0_30px_hsl(var(--primary)/0.08)]">
+                  {isVideo(screenshots[slideIndex]) ? (
+                    <video
+                      src={screenshots[slideIndex]}
+                      className="aspect-video w-full object-contain"
+                      controls
+                      preload="metadata"
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setLightboxIndex(slideIndex)}
+                      className="group block w-full cursor-zoom-in text-left"
+                      aria-label={`Open screenshot ${slideIndex + 1} fullscreen`}
+                    >
+                      <img
+                        src={screenshots[slideIndex]}
+                        alt={`Screenshot ${slideIndex + 1}`}
+                        className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
+                      />
+                    </button>
+                  )}
+
+                  {screenshots.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSlideIndex((i) => (i - 1 + screenshots.length) % screenshots.length)
+                        }
+                        className="glass absolute left-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-muted-foreground transition-colors hover:text-primary"
+                        aria-label="Previous screenshot"
+                      >
+                        <ArrowLeft size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSlideIndex((i) => (i + 1) % screenshots.length)}
+                        className="glass absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-muted-foreground transition-colors hover:text-accent"
+                        aria-label="Next screenshot"
+                      >
+                        <ArrowRight size={16} />
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                <div className="mt-3 flex items-center justify-between">
+                  <span className="font-mono text-[10px] text-muted-foreground">
+                    {String(slideIndex + 1).padStart(2, "0")} /{" "}
+                    {String(screenshots.length).padStart(2, "0")}
+                  </span>
+                  {screenshots.length > 1 && (
+                    <div className="flex gap-1.5">
+                      {screenshots.map((_, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => setSlideIndex(i)}
+                          aria-label={`Go to screenshot ${i + 1}`}
+                          className={`h-1.5 w-5 rounded-full transition-colors ${
+                            i === slideIndex ? "bg-accent" : "bg-border hover:bg-muted-foreground/40"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : project.image_url ? (
+              isVideo(project.image_url) ? (
+                <video
+                  src={project.image_url}
+                  className="aspect-video w-full rounded-lg border border-border object-cover"
+                  controls
+                  preload="metadata"
+                />
+              ) : (
+                <img
+                  src={project.image_url}
+                  alt={project.title}
+                  className="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_0_30px_hsl(var(--primary)/0.08)]"
+                />
+              )
+            ) : null}
           </div>
         )}
       </SectionReveal>
@@ -350,88 +423,6 @@ export function ProjectDetailContent({
             </>
           )}
 
-          {/* Screenshots */}
-          {screenshots.length > 0 && (
-            <>
-              <div className="mb-12 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
-              <SectionReveal>
-                <div className="mb-12">
-                  <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-accent">
-                    Screenshots
-                  </h2>
-
-                  <div className="relative overflow-hidden rounded-lg border border-border bg-background">
-                    {isVideo(screenshots[slideIndex]) ? (
-                      <video
-                        src={screenshots[slideIndex]}
-                        className="aspect-video w-full object-contain"
-                        controls
-                        preload="metadata"
-                      />
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setLightboxIndex(slideIndex)}
-                        className="group block w-full cursor-zoom-in text-left"
-                        aria-label={`Open screenshot ${slideIndex + 1} fullscreen`}
-                      >
-                        <img
-                          src={screenshots[slideIndex]}
-                          alt={`Screenshot ${slideIndex + 1}`}
-                          className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
-                        />
-                      </button>
-                    )}
-
-                    {screenshots.length > 1 && (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setSlideIndex((i) => (i - 1 + screenshots.length) % screenshots.length)
-                          }
-                          className="glass absolute left-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-muted-foreground transition-colors hover:text-primary"
-                          aria-label="Previous screenshot"
-                        >
-                          <ArrowLeft size={16} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSlideIndex((i) => (i + 1) % screenshots.length)}
-                          className="glass absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-muted-foreground transition-colors hover:text-accent"
-                          aria-label="Next screenshot"
-                        >
-                          <ArrowRight size={16} />
-                        </button>
-                      </>
-                    )}
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="font-mono text-[10px] text-muted-foreground">
-                      {String(slideIndex + 1).padStart(2, "0")} /{" "}
-                      {String(screenshots.length).padStart(2, "0")}
-                    </span>
-                    {screenshots.length > 1 && (
-                      <div className="flex gap-1.5">
-                        {screenshots.map((_, i) => (
-                          <button
-                            key={i}
-                            type="button"
-                            onClick={() => setSlideIndex(i)}
-                            aria-label={`Go to screenshot ${i + 1}`}
-                            className={`h-1.5 w-5 rounded-full transition-colors ${
-                              i === slideIndex ? "bg-accent" : "bg-border hover:bg-muted-foreground/40"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </SectionReveal>
-            </>
-          )}
         </div>
       </div>
 

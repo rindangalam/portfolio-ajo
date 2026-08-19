@@ -462,7 +462,7 @@ export function ProjectForm({ initialData, action, submitLabel }: ProjectFormPro
               currentUrl={initialData?.image_url}
               onUpload={setImageUrl}
               onRemove={() => setImageUrl("")}
-              label="Project Image"
+              label="Thumbnail (home page card)"
               hiddenFieldName="image_url"
             />
           </div>
