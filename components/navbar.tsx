@@ -67,7 +67,7 @@ export function Navbar() {
         isScrolled ? "glass shadow-lg shadow-black/10 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-gradient-to-r after:from-transparent after:via-primary/30 after:to-transparent" : "bg-transparent"
       )}
     >
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
         <a href="#hero" className="font-display text-lg font-bold text-gradient-animated">
           RANM
         </a>

@@ -38,7 +38,7 @@ function ProjectGridSkeleton() {
 function SectionSkeleton() {
   return (
     <div className="px-5 py-20">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex justify-center">
           <div className="h-4 w-24 skeleton-shimmer rounded-xl" />
         </div>
@@ -242,7 +242,7 @@ export default function Home() {
         </Suspense>
 
         <section id="projects" className="px-5 py-20">
-          <div className="mx-auto max-w-5xl">
+          <div className="mx-auto max-w-6xl">
             <SectionReveal>
               <div className="mb-12 flex items-center justify-center gap-3">
                 <div className="h-px w-8 bg-gradient-to-r from-transparent to-secondary/40" />

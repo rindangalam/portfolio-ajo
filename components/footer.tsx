@@ -16,7 +16,7 @@ interface FooterProps {
 export function Footer({ socialLinks }: FooterProps) {
   return (
     <footer className="relative z-10 border-t border-border/30 py-12">
-      <div className="mx-auto max-w-5xl px-5">
+      <div className="mx-auto max-w-6xl px-5">
         <div className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
           <span className="font-mono text-[10px] text-muted-foreground">
             &copy; {new Date().getFullYear()} rindang alam nur muhammad

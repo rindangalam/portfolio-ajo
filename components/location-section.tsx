@@ -32,7 +32,7 @@ export function LocationSection({ location, availableForHire, statusText, status
 
   return (
     <section className="relative px-5 py-16">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-4xl">
         <SectionReveal>
           <div className="retro-card rounded p-8">
             <div className="grid gap-6 md:grid-cols-3">

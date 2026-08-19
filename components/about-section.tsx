@@ -32,7 +32,7 @@ export function AboutSection({ aboutText, skills }: AboutSectionProps) {
 
   return (
     <section id="about" className="relative px-5 py-20">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <SectionReveal>
           <div className="mb-12 text-center">
             <span className="font-mono text-xs uppercase tracking-widest text-primary">
