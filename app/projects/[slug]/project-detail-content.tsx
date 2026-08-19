@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Github, ExternalLink, ArrowRight } from "lucide-react";
+import { ArrowLeft, Github, ExternalLink, ArrowRight, Briefcase, CalendarDays, CheckCircle2, Target } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { SectionReveal } from "@/components/section-reveal";
@@ -30,6 +30,11 @@ function getTechCategory(tech: string): string {
   return "other";
 }
 
+interface ProjectSection {
+  heading?: string;
+  content?: string;
+}
+
 interface ProjectData {
   title: string;
   description: string | null;
@@ -41,6 +46,12 @@ interface ProjectData {
   is_featured: boolean | null;
   screenshots: string[] | null;
   tech_details: { name: string; role: string; note?: string }[] | null;
+  role: string | null;
+  duration: string | null;
+  year: number | null;
+  highlights: string[] | null;
+  challenges: string[] | null;
+  sections: ProjectSection[] | null;
 }
 
 interface NavProject {
@@ -62,8 +73,16 @@ export function ProjectDetailContent({
   screenshots,
 }: ProjectDetailContentProps) {
   const techDetails = project.tech_details ?? [];
+  const highlights = project.highlights ?? [];
+  const challenges = project.challenges ?? [];
+  const storySections = project.sections ?? [];
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const hasLinks = Boolean(project.repo_url || project.live_url);
+  const hasMeta = Boolean(project.role || project.duration || project.year);
+  const storyContent =
+    storySections.length > 0
+      ? null
+      : project.long_description ?? project.description ?? null;
 
   return (
     <>
@@ -74,106 +93,187 @@ export function ProjectDetailContent({
         onNavigate={setLightboxIndex}
       />
 
-      {/* Hero Section — split layout */}
+      {/* Hero Section */}
       <SectionReveal>
-        <div className="mb-12 flex flex-col gap-8 md:flex-row md:items-start">
-          {/* Left — Info */}
-          <div className="flex-1">
-            <div className="mb-4 flex flex-wrap items-center gap-3">
-              {project.is_featured && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary shadow-[0_0_15px_hsl(var(--primary)/0.2)] animate-glow-pulse">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  Featured
-                </span>
-              )}
-              <span className="font-mono text-[10px] uppercase tracking-widest text-secondary">
-                Project Overview
+        <div className="mb-8">
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            {project.is_featured && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary shadow-[0_0_15px_hsl(var(--primary)/0.2)] animate-glow-pulse">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                Featured
               </span>
-            </div>
-
-            <h1 className="font-display text-2xl font-bold text-gradient md:text-3xl">
-              {project.title}
-            </h1>
-
-            {project.description && (
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                {project.description}
-              </p>
             )}
-
-            {project.tech_stack && project.tech_stack.length > 0 && (
-              <div className="mt-5 flex flex-wrap gap-2">
-                {project.tech_stack.map((tech: string) => {
-                  const cat = getTechCategory(tech);
-                  const colorClass = CATEGORY_COLORS[cat] ?? "border-border bg-card/50 text-muted-foreground";
-                  return (
-                    <span
-                      key={tech}
-                      className={`rounded-full border px-3 py-1 font-mono text-[11px] ${colorClass}`}
-                    >
-                      {tech}
-                    </span>
-                  );
-                })}
-              </div>
-            )}
-
-            <div className="mt-6 flex gap-3">
-              {project.repo_url && (
-                <a
-                  href={project.repo_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 font-mono text-xs text-primary transition-all hover:bg-primary/20 hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)]"
-                >
-                  <Github size={14} /> Repository
-                </a>
-              )}
-              {project.live_url && (
-                <a
-                  href={project.live_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-4 py-2.5 font-mono text-xs text-accent transition-all hover:bg-accent/20 hover:shadow-[0_0_25px_hsl(var(--accent)/0.2)]"
-                >
-                  <ExternalLink size={14} /> Live Demo
-                </a>
-              )}
-            </div>
+            <span className="font-mono text-[10px] uppercase tracking-widest text-secondary">
+              Project Overview
+            </span>
           </div>
 
-          {/* Right — Hero Image / Video */}
-          {project.image_url && (
-            <div className="shrink-0 md:w-[45%]">
-              {isVideo(project.image_url) ? (
-                <video
-                  src={project.image_url}
-                  className="aspect-video w-full rounded-lg border border-border object-cover"
-                  controls
-                  preload="metadata"
-                />
-              ) : (
-                <img
-                  src={project.image_url}
-                  alt={project.title}
-                  className="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_0_30px_hsl(var(--primary)/0.08)]"
-                />
+          <h1 className="font-display text-2xl font-bold text-gradient md:text-3xl">
+            {project.title}
+          </h1>
+
+          {hasMeta && (
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[11px] text-muted-foreground">
+              {project.role && (
+                <span className="flex items-center gap-1.5">
+                  <Briefcase size={12} className="text-secondary" />
+                  {project.role}
+                </span>
+              )}
+              {project.duration && (
+                <span className="flex items-center gap-1.5">
+                  <CalendarDays size={12} className="text-secondary" />
+                  {project.duration}
+                </span>
+              )}
+              {project.year && (
+                <span className="text-secondary/80">{project.year}</span>
               )}
             </div>
           )}
+
+          {project.description && (
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              {project.description}
+            </p>
+          )}
+
+          {project.tech_stack && project.tech_stack.length > 0 && (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {project.tech_stack.map((tech: string) => {
+                const cat = getTechCategory(tech);
+                const colorClass = CATEGORY_COLORS[cat] ?? "border-border bg-card/50 text-muted-foreground";
+                return (
+                  <span
+                    key={tech}
+                    className={`rounded-full border px-3 py-1 font-mono text-[11px] ${colorClass}`}
+                  >
+                    {tech}
+                  </span>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="mt-6 flex gap-3">
+            {project.repo_url && (
+              <a
+                href={project.repo_url}
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 font-mono text-xs text-primary transition-all hover:bg-primary/20 hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)]"
+              >
+                <Github size={14} /> Repository
+              </a>
+            )}
+            {project.live_url && (
+              <a
+                href={project.live_url}
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-4 py-2.5 font-mono text-xs text-accent transition-all hover:bg-accent/20 hover:shadow-[0_0_25px_hsl(var(--accent)/0.2)]"
+              >
+                <ExternalLink size={14} /> Live Demo
+              </a>
+            )}
+          </div>
         </div>
+
+        {/* Hero Image — full width */}
+        {project.image_url && (
+          <div className="mb-12">
+            {isVideo(project.image_url) ? (
+              <video
+                src={project.image_url}
+                className="aspect-video w-full rounded-lg border border-border object-cover"
+                controls
+                preload="metadata"
+              />
+            ) : (
+              <img
+                src={project.image_url}
+                alt={project.title}
+                className="aspect-video w-full rounded-lg border border-border object-cover shadow-[0_0_30px_hsl(var(--primary)/0.08)]"
+              />
+            )}
+          </div>
+        )}
       </SectionReveal>
 
-      {/* Story — Markdown long description */}
-      {(project.long_description ?? project.description) && (
+      {/* Story — sections or fallback markdown */}
+      {(storySections.length > 0 || storyContent) && (
         <>
           <div className="mb-12 h-px bg-gradient-to-r from-transparent via-secondary/20 to-transparent" />
           <SectionReveal>
             <div className="mb-12">
-              <h2 className="mb-5 font-mono text-xs uppercase tracking-widest text-secondary">
+              <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-secondary">
                 The Story
               </h2>
-              <MarkdownContent content={project.long_description ?? project.description ?? ""} />
+              {storySections.length > 0 ? (
+                <div className="space-y-8">
+                  {storySections.map((section, i) =>
+                    section.content ? (
+                      <div key={i}>
+                        {section.heading && (
+                          <h3 className="mb-3 flex items-center gap-3 font-display text-base font-bold text-foreground">
+                            <span className="font-mono text-[10px] text-primary">
+                              {String(i + 1).padStart(2, "0")}
+                            </span>
+                            {section.heading}
+                          </h3>
+                        )}
+                        <MarkdownContent content={section.content} />
+                      </div>
+                    ) : null
+                  )}
+                </div>
+              ) : (
+                <MarkdownContent content={storyContent!} />
+              )}
+            </div>
+          </SectionReveal>
+        </>
+      )}
+
+      {/* Key Highlights */}
+      {highlights.length > 0 && (
+        <>
+          <div className="mb-12 h-px bg-gradient-to-r from-transparent via-secondary/20 to-transparent" />
+          <SectionReveal>
+            <div className="mb-12">
+              <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-secondary">
+                Key Highlights
+              </h2>
+              <ul className="space-y-3">
+                {highlights.map((item, i) => (
+                  <li key={i} className="glass flex items-start gap-3 rounded-xl p-4">
+                    <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-primary" />
+                    <span className="text-sm leading-relaxed text-foreground/90">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </SectionReveal>
+        </>
+      )}
+
+      {/* Challenges Solved */}
+      {challenges.length > 0 && (
+        <>
+          <div className="mb-12 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
+          <SectionReveal>
+            <div className="mb-12">
+              <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-accent">
+                Challenges Solved
+              </h2>
+              <ul className="space-y-3">
+                {challenges.map((item, i) => (
+                  <li key={i} className="glass flex items-start gap-3 rounded-xl p-4">
+                    <Target size={16} className="mt-0.5 shrink-0 text-accent" />
+                    <span className="text-sm leading-relaxed text-foreground/90">{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </SectionReveal>
         </>
@@ -185,7 +285,7 @@ export function ProjectDetailContent({
           <div className="mb-12 h-px bg-gradient-to-r from-transparent via-secondary/20 to-transparent" />
           <SectionReveal>
             <div className="mb-12">
-              <h2 className="mb-5 font-mono text-xs uppercase tracking-widest text-secondary">
+              <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-secondary">
                 Tech Stack Details
               </h2>
               <div className="grid gap-3 md:grid-cols-2">
@@ -211,7 +311,7 @@ export function ProjectDetailContent({
           <div className="mb-12 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
           <SectionReveal>
             <div className="mb-12">
-              <h2 className="mb-5 font-mono text-xs uppercase tracking-widest text-accent">
+              <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-accent">
                 Screenshots
               </h2>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

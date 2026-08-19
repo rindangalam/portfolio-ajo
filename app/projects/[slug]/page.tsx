@@ -73,6 +73,12 @@ async function ProjectDetail({ params }: { params: Promise<{ slug: string }> }) 
         is_featured: project.is_featured,
         screenshots: project.screenshots,
         tech_details: project.tech_details,
+        role: project.role,
+        duration: project.duration,
+        year: project.year,
+        highlights: project.highlights,
+        challenges: project.challenges,
+        sections: project.sections,
       }}
       prevProject={prevProject}
       nextProject={nextProject}
