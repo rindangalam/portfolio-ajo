@@ -43,7 +43,7 @@ function AnimatedCounter({ value, label, delay }: { value: number; label: string
 export function StatsSection({ projectCount, skillCount, availableForHire, statusText, statusBusyText }: StatsSectionProps) {
   return (
     <section id="stats" className="relative px-5 py-20">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="retro-card rounded p-6">
             <AnimatedCounter value={projectCount} label="Projects" delay={0} />

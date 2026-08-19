@@ -42,7 +42,7 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
 
   return (
     <section id="about" className="relative px-5 py-20">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <SectionReveal>
           <div className="mb-12 flex items-center justify-center gap-3">
             <div className="h-px w-8 bg-gradient-to-r from-transparent to-secondary/40" />

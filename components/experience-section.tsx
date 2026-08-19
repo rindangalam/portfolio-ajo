@@ -82,7 +82,7 @@ export function ExperienceSection({ experiences }: ExperienceSectionProps) {
 
   return (
     <section id="experience" className="relative px-5 py-20">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-5xl">
         <SectionReveal>
           <div className="mb-12 flex items-center justify-center gap-3">
             <div className="h-px w-8 bg-gradient-to-r from-transparent to-primary/40" />

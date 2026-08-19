@@ -59,7 +59,7 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
 
   return (
     <section id="contact" className="relative px-5 py-20">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <SectionReveal>
           <div className="mb-12 flex items-center justify-center gap-3">
             <div className="h-px w-8 bg-gradient-to-r from-transparent to-primary/40" />
