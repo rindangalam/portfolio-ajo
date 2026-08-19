@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Github, ExternalLink, ArrowRight, Briefcase, CalendarDays, CheckCircle2, Target } from "lucide-react";
+import { ArrowLeft, Github, ExternalLink, ArrowRight, Briefcase, CalendarDays, CheckCircle2, Target, Calendar } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { SectionReveal } from "@/components/section-reveal";
@@ -76,9 +76,11 @@ export function ProjectDetailContent({
   const highlights = project.highlights ?? [];
   const challenges = project.challenges ?? [];
   const storySections = project.sections ?? [];
+  const techStack = project.tech_stack ?? [];
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const hasLinks = Boolean(project.repo_url || project.live_url);
   const hasMeta = Boolean(project.role || project.duration || project.year);
+  const hasRail = hasMeta || hasLinks || techStack.length > 0 || highlights.length > 0;
   const storyContent =
     storySections.length > 0
       ? null
@@ -95,7 +97,7 @@ export function ProjectDetailContent({
 
       {/* Hero Section */}
       <SectionReveal>
-        <div className="mb-8">
+        <div className="mb-10">
           <div className="mb-4 flex flex-wrap items-center gap-3">
             {project.is_featured && (
               <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary shadow-[0_0_15px_hsl(var(--primary)/0.2)] animate-glow-pulse">
@@ -108,75 +110,15 @@ export function ProjectDetailContent({
             </span>
           </div>
 
-          <h1 className="font-display text-2xl font-bold text-gradient md:text-3xl">
+          <h1 className="font-display text-2xl font-bold text-gradient md:text-4xl">
             {project.title}
           </h1>
-
-          {hasMeta && (
-            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[11px] text-muted-foreground">
-              {project.role && (
-                <span className="flex items-center gap-1.5">
-                  <Briefcase size={12} className="text-secondary" />
-                  {project.role}
-                </span>
-              )}
-              {project.duration && (
-                <span className="flex items-center gap-1.5">
-                  <CalendarDays size={12} className="text-secondary" />
-                  {project.duration}
-                </span>
-              )}
-              {project.year && (
-                <span className="text-secondary/80">{project.year}</span>
-              )}
-            </div>
-          )}
 
           {project.description && (
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
               {project.description}
             </p>
           )}
-
-          {project.tech_stack && project.tech_stack.length > 0 && (
-            <div className="mt-5 flex flex-wrap gap-2">
-              {project.tech_stack.map((tech: string) => {
-                const cat = getTechCategory(tech);
-                const colorClass = CATEGORY_COLORS[cat] ?? "border-border bg-card/50 text-muted-foreground";
-                return (
-                  <span
-                    key={tech}
-                    className={`rounded-full border px-3 py-1 font-mono text-[11px] ${colorClass}`}
-                  >
-                    {tech}
-                  </span>
-                );
-              })}
-            </div>
-          )}
-
-          <div className="mt-6 flex gap-3">
-            {project.repo_url && (
-              <a
-                href={project.repo_url}
-                target="_blank"
-                rel="noreferrer"
-                className="group flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 font-mono text-xs text-primary transition-all hover:bg-primary/20 hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)]"
-              >
-                <Github size={14} /> Repository
-              </a>
-            )}
-            {project.live_url && (
-              <a
-                href={project.live_url}
-                target="_blank"
-                rel="noreferrer"
-                className="group flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-4 py-2.5 font-mono text-xs text-accent transition-all hover:bg-accent/20 hover:shadow-[0_0_25px_hsl(var(--accent)/0.2)]"
-              >
-                <ExternalLink size={14} /> Live Demo
-              </a>
-            )}
-          </div>
         </div>
 
         {/* Hero Image — full width */}
@@ -200,167 +142,271 @@ export function ProjectDetailContent({
         )}
       </SectionReveal>
 
-      {/* Story — sections or fallback markdown */}
-      {(storySections.length > 0 || storyContent) && (
-        <>
-          <div className="mb-12 h-px bg-gradient-to-r from-transparent via-secondary/20 to-transparent" />
-          <SectionReveal>
-            <div className="mb-12">
-              <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-secondary">
-                The Story
-              </h2>
-              {storySections.length > 0 ? (
-                <div className="space-y-8">
-                  {storySections.map((section, i) =>
-                    section.content ? (
-                      <div key={i}>
-                        {section.heading && (
-                          <h3 className="mb-3 flex items-center gap-3 font-display text-base font-bold text-foreground">
-                            <span className="font-mono text-[10px] text-primary">
-                              {String(i + 1).padStart(2, "0")}
-                            </span>
-                            {section.heading}
-                          </h3>
-                        )}
-                        <MarkdownContent content={section.content} />
+      {/* Editorial layout: sticky info rail + story column */}
+      <div className="grid gap-10 lg:grid-cols-[240px_1fr] lg:items-start">
+        {hasRail && (
+          <aside className="lg:sticky lg:top-24 lg:self-start">
+            <SectionReveal>
+              <div className="glass rounded-xl p-5">
+                <p className="mb-4 font-mono text-[10px] uppercase tracking-widest text-secondary">
+                  Project Info
+                </p>
+
+                {hasMeta && (
+                  <dl className="space-y-3">
+                    {project.role && (
+                      <div className="flex items-start gap-2.5">
+                        <Briefcase size={13} className="mt-0.5 shrink-0 text-secondary" />
+                        <div className="min-w-0">
+                          <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                            Role
+                          </dt>
+                          <dd className="text-xs font-medium text-foreground/90">
+                            {project.role}
+                          </dd>
+                        </div>
                       </div>
-                    ) : null
+                    )}
+                    {project.duration && (
+                      <div className="flex items-start gap-2.5">
+                        <CalendarDays size={13} className="mt-0.5 shrink-0 text-secondary" />
+                        <div className="min-w-0">
+                          <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                            Duration
+                          </dt>
+                          <dd className="text-xs font-medium text-foreground/90">
+                            {project.duration}
+                          </dd>
+                        </div>
+                      </div>
+                    )}
+                    {project.year && (
+                      <div className="flex items-start gap-2.5">
+                        <Calendar size={13} className="mt-0.5 shrink-0 text-secondary" />
+                        <div className="min-w-0">
+                          <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                            Year
+                          </dt>
+                          <dd className="text-xs font-medium text-foreground/90">
+                            {project.year}
+                          </dd>
+                        </div>
+                      </div>
+                    )}
+                  </dl>
+                )}
+
+                {hasLinks && (
+                  <div className="mt-5 flex flex-col gap-2 border-t border-border/50 pt-5">
+                    {project.repo_url && (
+                      <a
+                        href={project.repo_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 font-mono text-[11px] text-primary transition-all hover:bg-primary/20 hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)]"
+                      >
+                        <Github size={13} /> Repository
+                      </a>
+                    )}
+                    {project.live_url && (
+                      <a
+                        href={project.live_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center justify-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-3 py-2 font-mono text-[11px] text-accent transition-all hover:bg-accent/20 hover:shadow-[0_0_25px_hsl(var(--accent)/0.2)]"
+                      >
+                        <ExternalLink size={13} /> Live Demo
+                      </a>
+                    )}
+                  </div>
+                )}
+
+                {techStack.length > 0 && (
+                  <div className="mt-5 border-t border-border/50 pt-5">
+                    <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-secondary">
+                      Tech Stack
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {techStack.map((tech: string) => {
+                        const cat = getTechCategory(tech);
+                        const colorClass = CATEGORY_COLORS[cat] ?? "border-border bg-card/50 text-muted-foreground";
+                        return (
+                          <span
+                            key={tech}
+                            className={`rounded-full border px-2.5 py-1 font-mono text-[10px] ${colorClass}`}
+                          >
+                            {tech}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {highlights.length > 0 && (
+                  <div className="mt-5 border-t border-border/50 pt-5">
+                    <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-secondary">
+                      Highlights
+                    </p>
+                    <ul className="space-y-2.5">
+                      {highlights.map((item, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <CheckCircle2 size={12} className="mt-0.5 shrink-0 text-primary" />
+                          <span className="text-[11px] leading-relaxed text-foreground/80">
+                            {item}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </SectionReveal>
+          </aside>
+        )}
+
+        <div className="min-w-0">
+          {/* Story — sections or fallback markdown */}
+          {(storySections.length > 0 || storyContent) && (
+            <>
+              <div className="mb-12 h-px bg-gradient-to-r from-transparent via-secondary/20 to-transparent" />
+              <SectionReveal>
+                <div className="mb-12">
+                  <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-secondary">
+                    The Story
+                  </h2>
+                  {storySections.length > 0 ? (
+                    <div className="space-y-8">
+                      {storySections.map((section, i) =>
+                        section.content ? (
+                          <div key={i}>
+                            {section.heading && (
+                              <h3 className="mb-3 flex items-center gap-3 font-display text-base font-bold text-foreground">
+                                <span className="font-mono text-[10px] text-primary">
+                                  {String(i + 1).padStart(2, "0")}
+                                </span>
+                                {section.heading}
+                              </h3>
+                            )}
+                            <MarkdownContent content={section.content} />
+                          </div>
+                        ) : null
+                      )}
+                    </div>
+                  ) : (
+                    <MarkdownContent content={storyContent!} />
                   )}
                 </div>
-              ) : (
-                <MarkdownContent content={storyContent!} />
-              )}
-            </div>
-          </SectionReveal>
-        </>
-      )}
+              </SectionReveal>
+            </>
+          )}
 
-      {/* Key Highlights */}
-      {highlights.length > 0 && (
-        <>
-          <div className="mb-12 h-px bg-gradient-to-r from-transparent via-secondary/20 to-transparent" />
-          <SectionReveal>
-            <div className="mb-12">
-              <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-secondary">
-                Key Highlights
-              </h2>
-              <ul className="space-y-3">
-                {highlights.map((item, i) => (
-                  <li key={i} className="glass flex items-start gap-3 rounded-xl p-4">
-                    <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-primary" />
-                    <span className="text-sm leading-relaxed text-foreground/90">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </SectionReveal>
-        </>
-      )}
+          {/* Challenges Solved */}
+          {challenges.length > 0 && (
+            <>
+              <div className="mb-12 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
+              <SectionReveal>
+                <div className="mb-12">
+                  <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-accent">
+                    Challenges Solved
+                  </h2>
+                  <ul className="space-y-3">
+                    {challenges.map((item, i) => (
+                      <li key={i} className="glass flex items-start gap-3 rounded-xl p-4">
+                        <Target size={16} className="mt-0.5 shrink-0 text-accent" />
+                        <span className="text-sm leading-relaxed text-foreground/90">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </SectionReveal>
+            </>
+          )}
 
-      {/* Challenges Solved */}
-      {challenges.length > 0 && (
-        <>
-          <div className="mb-12 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
-          <SectionReveal>
-            <div className="mb-12">
-              <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-accent">
-                Challenges Solved
-              </h2>
-              <ul className="space-y-3">
-                {challenges.map((item, i) => (
-                  <li key={i} className="glass flex items-start gap-3 rounded-xl p-4">
-                    <Target size={16} className="mt-0.5 shrink-0 text-accent" />
-                    <span className="text-sm leading-relaxed text-foreground/90">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </SectionReveal>
-        </>
-      )}
-
-      {/* Tech Stack Details */}
-      {techDetails.length > 0 && (
-        <>
-          <div className="mb-12 h-px bg-gradient-to-r from-transparent via-secondary/20 to-transparent" />
-          <SectionReveal>
-            <div className="mb-12">
-              <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-secondary">
-                Tech Stack Details
-              </h2>
-              <div className="grid gap-3 md:grid-cols-2">
-                {techDetails.map((td, i) => (
-                  <div key={td.name} className="glass relative rounded-xl p-5 transition-colors hover:border-primary/20">
-                    <span className="pointer-events-none absolute -right-2 -top-4 select-none font-display text-5xl font-bold leading-none text-foreground/[0.06]">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="font-display text-sm font-semibold text-foreground">{td.name}</h3>
-                    <p className="mt-1 font-mono text-[10px] text-primary">{td.role}</p>
-                    {td.note && <p className="mt-2 text-xs text-muted-foreground">{td.note}</p>}
+          {/* Tech Stack Details */}
+          {techDetails.length > 0 && (
+            <>
+              <div className="mb-12 h-px bg-gradient-to-r from-transparent via-secondary/20 to-transparent" />
+              <SectionReveal>
+                <div className="mb-12">
+                  <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-secondary">
+                    Tech Stack Details
+                  </h2>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {techDetails.map((td, i) => (
+                      <div key={td.name} className="glass relative rounded-xl p-5 transition-colors hover:border-primary/20">
+                        <span className="pointer-events-none absolute -right-2 -top-4 select-none font-display text-5xl font-bold leading-none text-foreground/[0.06]">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <h3 className="font-display text-sm font-semibold text-foreground">{td.name}</h3>
+                        <p className="mt-1 font-mono text-[10px] text-primary">{td.role}</p>
+                        {td.note && <p className="mt-2 text-xs text-muted-foreground">{td.note}</p>}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-          </SectionReveal>
-        </>
-      )}
+                </div>
+              </SectionReveal>
+            </>
+          )}
 
-      {/* Screenshots */}
-      {screenshots.length > 0 && (
-        <>
-          <div className="mb-12 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
-          <SectionReveal>
-            <div className="mb-12">
-              <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-accent">
-                Screenshots
-              </h2>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {screenshots.map((src, i) => (
-                  <ScreenshotThumb key={i} src={src} index={i} onClick={() => setLightboxIndex(i)} />
-                ))}
-              </div>
-            </div>
-          </SectionReveal>
-        </>
-      )}
+          {/* Screenshots */}
+          {screenshots.length > 0 && (
+            <>
+              <div className="mb-12 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
+              <SectionReveal>
+                <div className="mb-12">
+                  <h2 className="mb-6 font-mono text-xs uppercase tracking-widest text-accent">
+                    Screenshots
+                  </h2>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {screenshots.map((src, i) => (
+                      <ScreenshotThumb key={i} src={src} index={i} onClick={() => setLightboxIndex(i)} />
+                    ))}
+                  </div>
+                </div>
+              </SectionReveal>
+            </>
+          )}
 
-      {/* Closing CTA */}
-      {hasLinks && (
-        <SectionReveal>
-          <div className="glass mb-12 flex flex-col items-center gap-4 rounded-xl border-border/50 px-6 py-8 text-center md:flex-row md:justify-between md:text-left">
-            <div>
-              <h2 className="font-display text-lg font-bold text-foreground">
-                Interested in this project?
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Explore the code or see it running live.
-              </p>
-            </div>
-            <div className="flex shrink-0 gap-3">
-              {project.repo_url && (
-                <a
-                  href={project.repo_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 font-mono text-xs text-primary transition-all hover:bg-primary/20 hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)]"
-                >
-                  <Github size={14} /> Repository
-                </a>
-              )}
-              {project.live_url && (
-                <a
-                  href={project.live_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-4 py-2.5 font-mono text-xs text-accent transition-all hover:bg-accent/20 hover:shadow-[0_0_25px_hsl(var(--accent)/0.2)]"
-                >
-                  <ExternalLink size={14} /> Live Demo
-                </a>
-              )}
-            </div>
-          </div>
-        </SectionReveal>
-      )}
+          {/* Closing CTA */}
+          {hasLinks && (
+            <SectionReveal>
+              <div className="glass mb-12 flex flex-col items-center gap-4 rounded-xl border-border/50 px-6 py-8 text-center md:flex-row md:justify-between md:text-left">
+                <div>
+                  <h2 className="font-display text-lg font-bold text-foreground">
+                    Interested in this project?
+                  </h2>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Explore the code or see it running live.
+                  </p>
+                </div>
+                <div className="flex shrink-0 gap-3">
+                  {project.repo_url && (
+                    <a
+                      href={project.repo_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2.5 font-mono text-xs text-primary transition-all hover:bg-primary/20 hover:shadow-[0_0_25px_hsl(var(--primary)/0.2)]"
+                    >
+                      <Github size={14} /> Repository
+                    </a>
+                  )}
+                  {project.live_url && (
+                    <a
+                      href={project.live_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-2 rounded-lg border border-accent/30 bg-accent/10 px-4 py-2.5 font-mono text-xs text-accent transition-all hover:bg-accent/20 hover:shadow-[0_0_25px_hsl(var(--accent)/0.2)]"
+                    >
+                      <ExternalLink size={14} /> Live Demo
+                    </a>
+                  )}
+                </div>
+              </div>
+            </SectionReveal>
+          )}
+        </div>
+      </div>
 
       {/* Prev/Next Navigation */}
       {(prevProject || nextProject) && (
