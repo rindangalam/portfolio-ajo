@@ -13,37 +13,37 @@
     --popover: 80 12% 15%;
     --popover-foreground: 80 15% 90%;
 
-    --primary: 140 80% 60%;
+    --primary: 140 68% 56%;
     --primary-foreground: 80 20% 5%;
 
-    --secondary: 160 75% 55%;
+    --secondary: 160 62% 50%;
     --secondary-foreground: 80 20% 5%;
 
-    --accent: 35 85% 60%;
+    --accent: 35 68% 56%;
     --accent-foreground: 80 20% 5%;
 
     --muted: 80 15% 10%;
     --muted-foreground: 80 10% 50%;
 
-    --destructive: 0 72% 60%;
+    --destructive: 0 62% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    --warning: 35 90% 60%;
+    --warning: 35 72% 56%;
     --warning-foreground: 80 20% 5%;
 
     --border: 80 10% 17%;
     --input: 80 10% 14%;
-    --ring: 140 80% 60%;
+    --ring: 140 68% 56%;
 
-    --glow-primary: 140 80% 60%;
-    --glow-secondary: 160 75% 55%;
-    --glow-accent: 35 85% 60%;
+    --glow-primary: 140 68% 56%;
+    --glow-secondary: 160 62% 50%;
+    --glow-accent: 35 68% 56%;
 
-    --cat-frontend: 140 80% 60%;
-    --cat-backend: 160 75% 55%;
-    --cat-database: 35 85% 60%;
-    --cat-devops: 200 70% 55%;
-    --cat-language: 270 70% 60%;
+    --cat-frontend: 140 68% 56%;
+    --cat-backend: 160 62% 50%;
+    --cat-database: 35 68% 56%;
+    --cat-devops: 200 62% 52%;
+    --cat-language: 270 62% 58%;
     --cat-other: 80 10% 50%;
 
     --radius: 12px;

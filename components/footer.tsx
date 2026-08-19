@@ -1,6 +1,7 @@
 "use client";
 
 import { Github, Linkedin, Twitter, Mail, ArrowUp } from "lucide-react";
+import Link from "next/link";
 
 const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   github: <Github className="h-3.5 w-3.5" />,
@@ -45,6 +46,22 @@ export function Footer({ socialLinks }: FooterProps) {
             <ArrowUp size={12} />
             Back to top
           </a>
+        </div>
+
+        <div className="mt-6 flex items-center justify-center gap-4 border-t border-border/30 pt-6">
+          <Link
+            href="/privacy"
+            className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary"
+          >
+            privacy
+          </Link>
+          <span className="h-1 w-1 rounded-full bg-border" />
+          <Link
+            href="/terms"
+            className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary"
+          >
+            terms
+          </Link>
         </div>
       </div>
     </footer>

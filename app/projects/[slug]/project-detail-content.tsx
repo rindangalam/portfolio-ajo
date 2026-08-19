@@ -111,7 +111,7 @@ export function ProjectDetailContent({
             </span>
           </div>
 
-          <h1 className="font-display text-2xl font-bold text-gradient md:text-4xl">
+          <h1 className="font-display text-3xl font-bold text-gradient text-balance md:text-5xl">
             {project.title}
           </h1>
 

@@ -69,7 +69,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
+    <div className="flex min-h-dvh bg-background text-foreground">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -129,7 +129,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main area */}
-      <div className="flex min-h-screen flex-1 flex-col">
+      <div className="flex min-h-dvh flex-1 flex-col">
         {/* Header */}
         <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-4 border-b border-border/50 bg-background/95 px-4 backdrop-blur md:px-6">
           <button

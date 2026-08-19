@@ -16,7 +16,7 @@ import { Suspense } from "react";
 
 function HeroSkeleton() {
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center px-5">
+    <section className="flex min-h-dvh flex-col items-center justify-center px-5">
       <div className="flex flex-col items-center gap-4">
         <div className="h-10 w-64 skeleton-shimmer rounded-xl" />
         <div className="h-5 w-48 skeleton-shimmer rounded-xl" />
@@ -213,7 +213,7 @@ async function NavbarWrapper() {
 
 export default function Home() {
   return (
-    <div className="bg-grid flex min-h-screen flex-col">
+    <div className="bg-grid flex min-h-dvh flex-col">
       <Suspense fallback={<nav className="h-16 w-full" />}>
         <NavbarWrapper />
       </Suspense>

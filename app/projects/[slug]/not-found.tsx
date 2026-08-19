@@ -1,19 +1,26 @@
-import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
-export default async function ProjectNotFound() {
+export default function ProjectNotFound() {
   return (
-    <div className="dark">
-      <div className="flex min-h-screen flex-col items-center justify-center px-5">
-        <h1 className="font-display text-4xl font-bold text-fg-primary">404</h1>
-        <p className="mt-2 font-mono text-sm text-fg-muted">Project not found</p>
+    <main className="dark relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-5">
+      <div className="bg-grid pointer-events-none absolute inset-0" />
+      <div className="relative z-10 flex max-w-xl flex-col items-center text-center">
+        <p className="retro-border mb-6 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-accent">
+          &gt; error 404: project not found
+        </p>
+        <h1 className="font-display text-7xl font-bold text-gradient-animated glow-text">
+          404
+        </h1>
+        <p className="mt-4 font-mono text-sm text-muted-foreground">
+          the project you are looking for does not exist or has been unpublished.
+        </p>
         <Link
-          href="/"
-          className="mt-6 font-mono text-xs uppercase tracking-wider text-accent-amber hover:underline"
+          href="/projects"
+          className="mt-8 inline-flex items-center gap-2 retro-card-bevel rounded px-6 py-3 font-display text-sm font-bold text-primary transition-all hover:shadow-[4px_4px_0px_hsl(var(--primary)/0.4),0_0_20px_hsl(var(--primary)/0.15)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
         >
-          Back to home
+          view all projects
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

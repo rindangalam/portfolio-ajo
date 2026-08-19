@@ -98,7 +98,7 @@ function ProjectDetailSkeleton() {
 
 export default function ProjectDetailPage({ params }: Props) {
   return (
-    <div className="relative flex min-h-screen flex-col">
+    <div className="relative flex min-h-dvh flex-col">
       <GradientMesh />
       <ParticleField particleCount={20} />
 
