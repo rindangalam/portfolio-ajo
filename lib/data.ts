@@ -93,3 +93,60 @@ export async function getStats() {
     statusBusyText: (profile?.status_busy_text as string | undefined) ?? "Busy",
   };
 }
+
+// --- Blog posts ---
+
+export type Post = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  cover_image: string | null;
+  tags: string[] | null;
+  is_published: boolean;
+  is_featured: boolean | null;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string | null;
+};
+
+export async function getPosts() {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("is_published", true)
+    .order("published_at", { ascending: false });
+  return data as Post[] | null;
+}
+
+export async function getPostBySlug(slug: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("is_published", true)
+    .eq("slug", slug)
+    .single();
+  return data as Post | null;
+}
+
+export async function getAllPosts() {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("posts")
+    .select("*")
+    .order("created_at", { ascending: false });
+  return data as Post[] | null;
+}
+
+export async function getPostById(id: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("id", id)
+    .single();
+  return data as Post | null;
+}

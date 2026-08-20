@@ -10,6 +10,7 @@ async function AdminStats() {
     { count: published },
     { count: drafts },
     { count: skills },
+    { count: posts },
     { count: unreadMessages },
   ] = await Promise.all([
     supabase.from("projects").select("*", { count: "exact", head: true }),
@@ -23,6 +24,10 @@ async function AdminStats() {
       .eq("is_published", false),
     supabase.from("skills").select("*", { count: "exact", head: true }),
     supabase
+      .from("posts")
+      .select("*", { count: "exact", head: true })
+      .eq("is_published", true),
+    supabase
       .from("contact_messages")
       .select("*", { count: "exact", head: true })
       .eq("is_read", false)
@@ -30,17 +35,18 @@ async function AdminStats() {
   ]);
 
   const stats = [
-    { label: "Total", value: total ?? 0 },
-    { label: "Published", value: published ?? 0 },
-    { label: "Drafts", value: drafts ?? 0 },
-    { label: "Skills", value: skills ?? 0 },
-    { label: "Unread", value: unreadMessages ?? 0 },
+    { label: "Total", value: total ?? 0, href: "/admin/projects" },
+    { label: "Published", value: published ?? 0, href: "/admin/projects" },
+    { label: "Drafts", value: drafts ?? 0, href: "/admin/projects" },
+    { label: "Skills", value: skills ?? 0, href: "/admin/skills" },
+    { label: "Posts", value: posts ?? 0, href: "/admin/posts" },
+    { label: "Unread", value: unreadMessages ?? 0, href: "/admin/contacts" },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
       {stats.map((s) => (
-        <Link key={s.label} href={s.label === "Unread" ? "/admin/contacts" : "/admin/projects"} className="retro-card rounded p-4 text-center transition-colors hover:bg-accent/5">
+        <Link key={s.label} href={s.href} className="retro-card rounded p-4 text-center transition-colors hover:bg-accent/5">
           <div className="font-display text-2xl font-bold text-accent">
             {s.value}
           </div>
@@ -108,7 +114,7 @@ export default function AdminPage() {
         </p>
       </div>
 
-      <Suspense fallback={<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">{[1,2,3,4,5].map(i => <div key={i} className="h-20 skeleton-shimmer rounded" />)}</div>}>
+      <Suspense fallback={<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">{[1,2,3,4,5,6].map(i => <div key={i} className="h-20 skeleton-shimmer rounded" />)}</div>}>
         <AdminStats />
       </Suspense>
 
@@ -120,6 +126,11 @@ export default function AdminPage() {
           <Link href="/admin/projects/new">
             <Button className="rounded bg-accent font-mono text-[10px] uppercase tracking-wider text-background hover:bg-accent/80">
               + New Project
+            </Button>
+          </Link>
+          <Link href="/admin/posts/new">
+            <Button className="rounded bg-accent font-mono text-[10px] uppercase tracking-wider text-background hover:bg-accent/80">
+              + New Post
             </Button>
           </Link>
           <Link href="/admin/skills">

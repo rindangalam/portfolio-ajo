@@ -12,6 +12,7 @@ import {
   Share2,
   MessageSquare,
   FolderKanban,
+  FileText,
   Menu,
   X,
   Bell,
@@ -42,6 +43,7 @@ const NAV_SECTIONS: NavSection[] = [
     title: "Content",
     items: [
       { label: "Projects", href: "/admin/projects", icon: <FolderKanban className="h-4 w-4" /> },
+      { label: "Blog Posts", href: "/admin/posts", icon: <FileText className="h-4 w-4" /> },
       { label: "Skills", href: "/admin/skills", icon: <Code className="h-4 w-4" /> },
       { label: "Experience", href: "/admin/experiences", icon: <Briefcase className="h-4 w-4" /> },
     ],

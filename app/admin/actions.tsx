@@ -289,3 +289,105 @@ export async function updateProfile(formData: FormData) {
   revalidatePath("/");
   redirect("/admin/profile");
 }
+
+// --- Blog posts ---
+
+function parseSlug(raw: string | null, fallback: string) {
+  const slug = (raw ?? "").trim().toLowerCase();
+  if (slug) return slug;
+  return fallback
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
+}
+
+export async function createPost(formData: FormData) {
+  const supabase = await createClient();
+  const title = (formData.get("title") as string) ?? "";
+  const isPublished = formData.get("is_published") === "on";
+  const { error } = await supabase.from("posts").insert({
+    title,
+    slug: parseSlug(formData.get("slug") as string, title),
+    excerpt: (formData.get("excerpt") as string) || null,
+    content: (formData.get("content") as string) ?? "",
+    cover_image: (formData.get("cover_image") as string) || null,
+    tags: parseCommaSeperated(formData.get("tags") as string),
+    is_published: isPublished,
+    is_featured: formData.get("is_featured") === "on",
+    published_at: isPublished ? new Date().toISOString() : null,
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/posts");
+  revalidatePath("/admin");
+  revalidatePath("/blog");
+  revalidatePath("/");
+  redirect("/admin/posts");
+}
+
+export async function updatePost(id: string, formData: FormData) {
+  const supabase = await createClient();
+  const title = (formData.get("title") as string) ?? "";
+  const isPublished = formData.get("is_published") === "on";
+
+  const { data: existing } = await supabase
+    .from("posts")
+    .select("published_at")
+    .eq("id", id)
+    .single();
+
+  const { error } = await supabase
+    .from("posts")
+    .update({
+      title,
+      slug: parseSlug(formData.get("slug") as string, title),
+      excerpt: (formData.get("excerpt") as string) || null,
+      content: (formData.get("content") as string) ?? "",
+      cover_image: (formData.get("cover_image") as string) || null,
+      tags: parseCommaSeperated(formData.get("tags") as string),
+      is_published: isPublished,
+      is_featured: formData.get("is_featured") === "on",
+      published_at: isPublished ? (existing?.published_at ?? new Date().toISOString()) : null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/posts");
+  revalidatePath("/admin");
+  revalidatePath("/blog");
+  revalidatePath("/");
+  redirect("/admin/posts");
+}
+
+export async function deletePost(id: string) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("posts").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/posts");
+  revalidatePath("/admin");
+  revalidatePath("/blog");
+  revalidatePath("/");
+}
+
+export async function togglePostPublish(id: string, current: boolean) {
+  const supabase = await createClient();
+  const { data: existing } = await supabase
+    .from("posts")
+    .select("published_at")
+    .eq("id", id)
+    .single();
+
+  const next = !current;
+  const { error } = await supabase
+    .from("posts")
+    .update({
+      is_published: next,
+      published_at: next ? (existing?.published_at ?? new Date().toISOString()) : null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/posts");
+  revalidatePath("/admin");
+  revalidatePath("/blog");
+  revalidatePath("/");
+}
