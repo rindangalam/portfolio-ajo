@@ -85,7 +85,7 @@ export function Navbar() {
           <button
             onClick={() => setIsMobileOpen(!isMobileOpen)}
             className={cn(
-              "relative flex h-10 w-10 items-center justify-center rounded-full text-foreground transition-all duration-500 ease-premium md:hidden",
+              "relative flex h-11 w-11 items-center justify-center rounded-full text-foreground transition-all duration-500 ease-premium md:hidden",
               isMobileOpen ? "text-secondary" : "text-muted-foreground"
             )}
             aria-label={isMobileOpen ? "Close menu" : "Open menu"}

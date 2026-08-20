@@ -10,11 +10,22 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   email: <Mail className="h-3.5 w-3.5" />,
 };
 
+const NAV_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/projects", label: "Projects" },
+  { href: "/contact", label: "Contact" },
+];
+
 interface FooterProps {
   socialLinks: { platform: string; url: string }[];
 }
 
 export function Footer({ socialLinks }: FooterProps) {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer className="relative z-10 border-t border-border/30 py-12">
       <div className="mx-auto max-w-7xl px-5">
@@ -23,6 +34,18 @@ export function Footer({ socialLinks }: FooterProps) {
             &copy; {new Date().getFullYear()} rindang alam nur muhammad
           </span>
 
+          <nav aria-label="Footer" className="flex items-center gap-4">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
           <div className="flex items-center gap-2">
             {socialLinks.map((link) => (
               <a
@@ -30,7 +53,8 @@ export function Footer({ socialLinks }: FooterProps) {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-all duration-300 hover:bg-secondary/10 hover:text-secondary"
+                aria-label={link.platform}
+                className="flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-all duration-300 hover:bg-secondary/10 hover:text-secondary"
               >
                 {SOCIAL_ICONS[link.platform] ?? (
                   <span className="font-mono text-[8px] uppercase">{link.platform.slice(0, 2)}</span>
@@ -39,13 +63,14 @@ export function Footer({ socialLinks }: FooterProps) {
             ))}
           </div>
 
-          <a
-            href="#hero"
+          <button
+            type="button"
+            onClick={scrollToTop}
             className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground transition-colors hover:text-primary"
           >
             <ArrowUp size={12} />
             Back to top
-          </a>
+          </button>
         </div>
 
         <div className="mt-6 flex items-center justify-center gap-4 border-t border-border/30 pt-6">

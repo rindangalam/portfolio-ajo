@@ -1,23 +1,28 @@
 import { Suspense } from "react";
+import { CheckCircle2, Info, XCircle, AlertTriangle } from "lucide-react";
 
-const STATUS: Record<string, { icon: string; title: string; description: string }> = {
+const STATUS: Record<string, { icon: React.ReactNode; iconClass: string; title: string; description: string }> = {
   success: {
-    icon: "✅",
+    icon: <CheckCircle2 className="h-12 w-12" />,
+    iconClass: "text-primary",
     title: "Message Confirmed",
     description: "Your message has been verified and will be delivered. Thank you.",
   },
   already: {
-    icon: "ℹ️",
+    icon: <Info className="h-12 w-12" />,
+    iconClass: "text-secondary",
     title: "Already Confirmed",
     description: "This message has already been verified. No action needed.",
   },
   invalid: {
-    icon: "❌",
+    icon: <XCircle className="h-12 w-12" />,
+    iconClass: "text-red-400",
     title: "Invalid Link",
     description: "This verification link is invalid or expired. Please submit your message again.",
   },
   error: {
-    icon: "⚠️",
+    icon: <AlertTriangle className="h-12 w-12" />,
+    iconClass: "text-red-400",
     title: "Something Went Wrong",
     description: "An error occurred while verifying your message. Please try again.",
   },
@@ -46,7 +51,7 @@ async function VerifyInner({
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-5">
       <div className="glass w-full max-w-md rounded-2xl p-8 text-center">
-        <div className="text-5xl mb-4">{info.icon}</div>
+        <div className={`mb-4 flex justify-center ${info.iconClass}`}>{info.icon}</div>
         <h1 className="font-display text-2xl font-bold text-foreground mb-2">
           {info.title}
         </h1>

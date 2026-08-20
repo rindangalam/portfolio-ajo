@@ -99,6 +99,15 @@ export function ProjectDetailContent({
       {/* Hero Section */}
       <SectionReveal>
         <div className="mb-10">
+          <nav aria-label="Breadcrumb" className="mb-6">
+            <Link
+              href="/projects"
+              className="group inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
+            >
+              <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
+              All Projects
+            </Link>
+          </nav>
           <div className="mb-4 flex flex-wrap items-center gap-3">
             {project.is_featured && (
               <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-primary shadow-[0_0_15px_hsl(var(--primary)/0.2)] animate-glow-pulse">

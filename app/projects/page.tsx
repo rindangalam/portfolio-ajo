@@ -59,22 +59,13 @@ export default function ProjectsPage() {
                 <div className="h-px w-8 bg-gradient-to-l from-transparent to-secondary/40" />
               </div>
               <h1 className="mb-12 text-center font-display text-4xl font-bold text-foreground md:text-5xl">
-                Selected Projects
+                All Projects
               </h1>
             </SectionReveal>
           </div>
 
-          <section className="px-5 py-20">
+          <section className="px-5 pb-20">
             <div className="mx-auto max-w-7xl">
-              <SectionReveal>
-                <div className="mb-12 flex items-center justify-center gap-3">
-                  <div className="h-px w-8 bg-gradient-to-r from-transparent to-secondary/40" />
-                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-gradient">
-                    All Projects
-                  </span>
-                  <div className="h-px w-8 bg-gradient-to-l from-transparent to-secondary/40" />
-                </div>
-              </SectionReveal>
               <Suspense fallback={<SectionSkeleton />}>
                 <AllProjectsSection />
               </Suspense>
