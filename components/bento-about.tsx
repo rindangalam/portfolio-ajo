@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { SectionReveal } from "@/components/section-reveal";
 import { GlowCard } from "@/components/glow-card";
 
@@ -40,10 +42,13 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
 
   const categories = Object.entries(grouped);
 
+  const gridRef = useRef<HTMLDivElement>(null);
+  const gridInView = useInView(gridRef, { once: true, margin: "-80px" });
+
   return (
     <section id="about" className="relative px-5 py-20">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div ref={gridRef} className="grid grid-cols-2 gap-3 md:grid-cols-4" style={{ perspective: 1200 }}>
           {/* Bio — full-width card at top */}
           <SectionReveal className="col-span-2 md:col-span-4" direction="up">
             <GlowCard glowColor="hsl(0 0% 100%)" className="h-full" contentClassName="p-6 h-full">
@@ -56,9 +61,19 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
             </GlowCard>
           </SectionReveal>
 
-          {/* Skill categories — cards with count + sample skills */}
+          {/* Skill categories — staggered 3D reveal */}
           {categories.map(([category, categorySkills], i) => (
-            <SectionReveal key={category} direction="up" delay={0.1 * (i + 1)} className="transition-transform duration-200 hover:scale-[1.02]">
+            <motion.div
+              key={category}
+              initial={{ opacity: 0, y: 40, rotateX: 12, scale: 0.96, filter: "blur(6px)" }}
+              animate={
+                gridInView
+                  ? { opacity: 1, y: 0, rotateX: 0, scale: 1, filter: "blur(0px)" }
+                  : {}
+              }
+              transition={{ duration: 0.6, delay: 0.08 * (i + 1), ease: [0.32, 0.72, 0, 1] }}
+              className="transition-transform duration-300 hover:scale-[1.02]"
+            >
               <GlowCard
                 glowColor={CATEGORY_COLORS[category] ?? CATEGORY_COLORS.other}
                 contentClassName="p-4 h-full"
@@ -82,7 +97,7 @@ export function BentoAbout({ aboutText, skills }: BentoAboutProps) {
                   )}
                 </div>
               </GlowCard>
-            </SectionReveal>
+            </motion.div>
           ))}
 
           {/* Total skills — full-width card at bottom */}

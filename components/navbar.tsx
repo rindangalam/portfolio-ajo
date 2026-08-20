@@ -16,6 +16,14 @@ const NAV_ITEMS = [
 
 const EASE_PREMIUM = [0.32, 0.72, 0, 1] as const;
 
+const SECTION_HREF: Record<string, string> = {
+  home: "/",
+  about: "/about",
+  projects: "/projects",
+  blog: "/blog",
+  contact: "/contact",
+};
+
 function Hamburger({ open }: { open: boolean }) {
   return (
     <span className="relative block h-4 w-5" aria-hidden="true">
@@ -39,6 +47,7 @@ export function Navbar() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [spySection, setSpySection] = useState<string | null>(null);
 
   const { scrollY } = useScroll();
 
@@ -50,12 +59,44 @@ export function Navbar() {
     setIsMobileOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    setSpySection(null);
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-nav-section]"),
+    );
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length) {
+          const section = visible[0].target.getAttribute("data-nav-section");
+          if (section) setSpySection(section);
+        }
+      },
+      { rootMargin: "-15% 0px -55% 0px", threshold: 0 },
+    );
+
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  const activeHref = spySection ? SECTION_HREF[spySection] : null;
   const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+    activeHref
+      ? href === activeHref
+      : href === "/"
+        ? pathname === "/"
+        : pathname.startsWith(href);
 
   return (
     <>
       <motion.nav
+        initial={{ y: -28, opacity: 0, filter: "blur(6px)" }}
+        animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+        transition={{ duration: 0.6, ease: EASE_PREMIUM }}
         className={cn(
           "fixed left-0 right-0 top-0 z-50 transition-all duration-500 ease-premium",
           isScrolled ? "glass shadow-lg shadow-black/5 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-gradient-to-r after:from-transparent after:via-primary/30 after:to-transparent" : "bg-transparent"

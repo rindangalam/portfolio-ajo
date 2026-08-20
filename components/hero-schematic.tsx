@@ -46,8 +46,11 @@ export function HeroSchematic({
     offset: ["start start", "end start"],
   });
 
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, 150]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+  const cardY = useTransform(scrollYProgress, [0, 1], [0, 260]);
+  const cardScale = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
+  const cardRotate = useTransform(scrollYProgress, [0, 1], [0, -6]);
 
   return (
     <section
@@ -57,10 +60,13 @@ export function HeroSchematic({
     >
       <motion.div
         className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-8 text-center md:gap-12 md:flex-row md:text-left"
-        style={{ y: contentY, opacity: contentOpacity }}
+        style={{ opacity: textOpacity }}
       >
         {/* Left — Text Content */}
-        <div className="flex flex-1 flex-col items-center md:items-start">
+        <motion.div
+          className="flex flex-1 flex-col items-center md:items-start"
+          style={{ y: textY }}
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -156,14 +162,15 @@ export function HeroSchematic({
               <ArrowDown className="h-4 w-4 animate-float drop-shadow-[0_0_8px_hsl(var(--secondary)/0.5)]" />
             </a>
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* Right — Holographic ID Card */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="shrink-0"
+          style={{ y: cardY, scale: cardScale, rotate: cardRotate }}
+          className="w-full shrink-0 md:w-auto"
         >
           <HolographicIdCard
             name={name ?? "Rindang Alam Nur Muhammad"}

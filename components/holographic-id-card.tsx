@@ -89,7 +89,7 @@ export function HolographicIdCard({
       transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
       className="flex justify-center"
     >
-      <div className="rounded">
+      <div className="w-full rounded">
         <div style={{ perspective: "1200px" }} className={isFlipped ? "" : "animate-float"}>
           <motion.div
             ref={cardRef}

@@ -4,9 +4,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays, Clock } from "lucide-react";
 import { MarkdownContent } from "@/components/markdown-content";
-import { SectionReveal } from "@/components/section-reveal";
 import { PageTransition } from "@/components/page-transition";
-import { getPostBySlug, getPosts } from "@/lib/data";
+import { BlogReadingProgress } from "@/components/blog-reading-progress";
+import { getPostBySlug } from "@/lib/data";
 
 const VIDEO_EXTENSIONS = [".mp4", ".webm", ".mov", ".mkv"];
 function isVideo(src: string): boolean {
@@ -137,11 +137,13 @@ export default function BlogPostPage({
   return (
     <div className="bg-grid flex min-h-dvh flex-col">
       <PageTransition>
-        <main id="main-content" className="relative z-10 flex-1">
+        <main id="main-content" className="relative z-10 flex-1" data-nav-section="blog">
           <div className="mx-auto max-w-3xl px-5 pt-32 pb-24">
-            <Suspense fallback={<DetailSkeleton />}>
-              <PostDetail params={params} />
-            </Suspense>
+            <BlogReadingProgress>
+              <Suspense fallback={<DetailSkeleton />}>
+                <PostDetail params={params} />
+              </Suspense>
+            </BlogReadingProgress>
           </div>
         </main>
       </PageTransition>
