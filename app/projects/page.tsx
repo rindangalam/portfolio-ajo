@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ProjectCard } from "@/components/project-card";
-import { FeaturedShowcase } from "@/components/featured-showcase";
 import { SectionReveal } from "@/components/section-reveal";
 import { PageTransition } from "@/components/page-transition";
-import { getProjects, getFeaturedProjects } from "@/lib/data";
+import { getProjects } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Projects — Rindang Alam",
@@ -23,12 +22,6 @@ function SectionSkeleton() {
       </div>
     </div>
   );
-}
-
-async function FeaturedSection() {
-  const featured = await getFeaturedProjects();
-  if (featured.length === 0) return null;
-  return <FeaturedShowcase projects={featured} />;
 }
 
 async function AllProjectsSection() {
@@ -70,10 +63,6 @@ export default function ProjectsPage() {
               </h1>
             </SectionReveal>
           </div>
-
-          <Suspense fallback={<SectionSkeleton />}>
-            <FeaturedSection />
-          </Suspense>
 
           <section className="px-5 py-20">
             <div className="mx-auto max-w-7xl">
