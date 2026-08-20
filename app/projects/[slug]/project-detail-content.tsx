@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowLeft, Github, ExternalLink, ArrowRight, Briefcase, CalendarDays, CheckCircle2, Target, Calendar } from "lucide-react";
 import { SectionReveal } from "@/components/section-reveal";
@@ -77,7 +77,6 @@ export function ProjectDetailContent({
   const storySections = project.sections ?? [];
   const techStack = project.tech_stack ?? [];
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [slideIndex, setSlideIndex] = useState(0);
   const hasLinks = Boolean(project.repo_url || project.live_url);
   const hasMeta = Boolean(project.role || project.duration || project.year);
   const hasRail = hasMeta || hasLinks || techStack.length > 0 || highlights.length > 0;
@@ -130,80 +129,11 @@ export function ProjectDetailContent({
           )}
         </div>
 
-        {/* Hero Gallery — screenshots slider, fallback to thumbnail */}
+        {/* Hero Gallery — carousel (3 visible on desktop, 1 on mobile), fallback to thumbnail */}
         {(screenshots.length > 0 || project.image_url) && (
           <div className="mb-12">
             {screenshots.length > 0 ? (
-              <>
-                <div className="relative overflow-hidden rounded-lg border border-border bg-background shadow-[0_0_30px_hsl(var(--primary)/0.08)]">
-                  {isVideo(screenshots[slideIndex]) ? (
-                    <video
-                      src={screenshots[slideIndex]}
-                      className="aspect-video w-full object-contain"
-                      controls
-                      preload="metadata"
-                    />
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => setLightboxIndex(slideIndex)}
-                      className="group block w-full cursor-zoom-in text-left"
-                      aria-label={`Open screenshot ${slideIndex + 1} fullscreen`}
-                    >
-                      <img
-                        src={screenshots[slideIndex]}
-                        alt={`Screenshot ${slideIndex + 1}`}
-                        className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
-                      />
-                    </button>
-                  )}
-
-                  {screenshots.length > 1 && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setSlideIndex((i) => (i - 1 + screenshots.length) % screenshots.length)
-                        }
-                        className="glass absolute left-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-muted-foreground transition-colors hover:text-primary"
-                        aria-label="Previous screenshot"
-                      >
-                        <ArrowLeft size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setSlideIndex((i) => (i + 1) % screenshots.length)}
-                        className="glass absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-muted-foreground transition-colors hover:text-accent"
-                        aria-label="Next screenshot"
-                      >
-                        <ArrowRight size={16} />
-                      </button>
-                    </>
-                  )}
-                </div>
-
-                <div className="mt-3 flex items-center justify-between">
-                  <span className="font-mono text-[10px] text-muted-foreground">
-                    {String(slideIndex + 1).padStart(2, "0")} /{" "}
-                    {String(screenshots.length).padStart(2, "0")}
-                  </span>
-                  {screenshots.length > 1 && (
-                    <div className="flex gap-1.5">
-                      {screenshots.map((_, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={() => setSlideIndex(i)}
-                          aria-label={`Go to screenshot ${i + 1}`}
-                          className={`h-1.5 w-5 rounded-full transition-colors ${
-                            i === slideIndex ? "bg-accent" : "bg-border hover:bg-muted-foreground/40"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </>
+              <ScreenshotCarousel screenshots={screenshots} onOpen={setLightboxIndex} />
             ) : project.image_url ? (
               isVideo(project.image_url) ? (
                 <video
@@ -475,6 +405,139 @@ export function ProjectDetailContent({
         </>
       )}
     </>
+  );
+}
+
+const SLIDE_GAP = 12;
+
+function ScreenshotCarousel({
+  screenshots,
+  onOpen,
+}: {
+  screenshots: string[];
+  onOpen: (index: number) => void;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const [canScroll, setCanScroll] = useState(false);
+
+  const slideStep = () => {
+    const el = trackRef.current;
+    if (!el) return 0;
+    const first = el.children[0] as HTMLElement | undefined;
+    return (first?.getBoundingClientRect().width ?? el.clientWidth) + SLIDE_GAP;
+  };
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const update = () => {
+      setCanScroll(el.scrollWidth > el.clientWidth + 4);
+      const step = slideStep() || 1;
+      setActive(Math.min(screenshots.length - 1, Math.round(el.scrollLeft / step)));
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [screenshots.length]);
+
+  const scrollByStep = (dir: number) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * slideStep(), behavior: "smooth" });
+  };
+
+  const goTo = (index: number) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollTo({ left: index * slideStep(), behavior: "smooth" });
+  };
+
+  return (
+    <div>
+      <div className="relative">
+        <div
+          ref={trackRef}
+          role="region"
+          aria-label="Project screenshots"
+          className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth"
+        >
+          {screenshots.map((src, i) => (
+            <div key={i} className="w-full shrink-0 snap-center md:w-[calc(33.333%-8px)]">
+              <button
+                type="button"
+                onClick={() => onOpen(i)}
+                className="group block w-full cursor-zoom-in overflow-hidden rounded-lg border border-border bg-background text-left shadow-[0_0_30px_hsl(var(--primary)/0.08)]"
+                aria-label={`Open screenshot ${i + 1} fullscreen`}
+              >
+                {isVideo(src) ? (
+                  <video
+                    src={src}
+                    className="aspect-video w-full object-cover"
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                  />
+                ) : (
+                  <img
+                    src={src}
+                    alt={`Screenshot ${i + 1}`}
+                    className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
+                  />
+                )}
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {canScroll && (
+          <>
+            <button
+              type="button"
+              onClick={() => scrollByStep(-1)}
+              className="glass absolute left-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-muted-foreground transition-colors hover:text-primary"
+              aria-label="Previous screenshots"
+            >
+              <ArrowLeft size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollByStep(1)}
+              className="glass absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-2 text-muted-foreground transition-colors hover:text-accent"
+              aria-label="Next screenshots"
+            >
+              <ArrowRight size={16} />
+            </button>
+          </>
+        )}
+      </div>
+
+      <div className="mt-3 flex items-center justify-between">
+        <span className="font-mono text-[10px] text-muted-foreground">
+          {String(active + 1).padStart(2, "0")} / {String(screenshots.length).padStart(2, "0")}
+        </span>
+        {canScroll && screenshots.length > 1 && (
+          <div className="flex gap-1.5">
+            {screenshots.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={`Go to screenshot ${i + 1}`}
+                className={`h-1.5 w-4 rounded-full transition-colors ${
+                  i === active ? "bg-accent" : "bg-border hover:bg-muted-foreground/40"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
