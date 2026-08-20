@@ -59,10 +59,10 @@ export default {
         "cat-other": "hsl(var(--cat-other))",
       },
       fontFamily: {
-        display: ["var(--font-vt323)", "monospace"],
-        body: ["var(--font-inter)", "sans-serif"],
+        display: ["var(--font-space-grotesk)", "sans-serif"],
+        body: ["var(--font-space-grotesk)", "sans-serif"],
         mono: ["var(--font-jetbrains-mono)", "monospace"],
-        retro: ["var(--font-vt323)", "monospace"],
+        retro: ["var(--font-space-grotesk)", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius-lg)",

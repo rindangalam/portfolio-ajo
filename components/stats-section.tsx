@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView, animate } from "framer-motion";
 
 interface StatsSectionProps {
   projectCount: number;
@@ -14,17 +14,30 @@ interface StatsSectionProps {
 function AnimatedCounter({ value, label, delay }: { value: number; label: string; delay: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+    const controls = animate(0, value, {
+      duration: 1.4,
+      delay,
+      ease: [0.32, 0.72, 0, 1],
+      onUpdate: (v) => setDisplay(Math.round(v)),
+    });
+    return () => controls.stop();
+  }, [isInView, value, delay]);
 
   return (
     <div ref={ref} className="text-center">
       <div className="relative inline-block">
         <motion.span
-          className="block font-display text-4xl font-bold text-gradient md:text-5xl"
+          className="block font-display text-4xl font-bold text-foreground tabular-nums md:text-5xl"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay }}
+          transition={{ duration: 0.6, delay, ease: [0.32, 0.72, 0, 1] }}
         >
-          {isInView ? value : 0}
+          {display}
+          <span className="text-primary">+</span>
         </motion.span>
         <div className="pointer-events-none absolute -inset-4 rounded-full bg-primary/10 blur-2xl animate-glow-pulse" />
       </div>
@@ -56,11 +69,11 @@ export function StatsSection({ projectCount, skillCount, availableForHire, statu
               <div className="relative inline-flex items-center gap-2">
                 {availableForHire && (
                   <span className="relative flex h-3 w-3">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
-                    <span className="relative inline-flex h-3 w-3 rounded-full bg-accent" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                    <span className="relative inline-flex h-3 w-3 rounded-full bg-primary" />
                   </span>
                 )}
-                <span className="font-display text-lg font-bold text-accent">
+                <span className="font-display text-lg font-bold text-foreground">
                   {availableForHire ? statusText : statusBusyText}
                 </span>
               </div>

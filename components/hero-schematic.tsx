@@ -78,7 +78,7 @@ export function HeroSchematic({
             <MagicText
               text={name ?? "Rindang Alam Nur Muhammad"}
               as="h1"
-              className="font-display text-4xl font-bold text-gradient-animated glow-text animate-flicker text-balance sm:text-5xl md:text-7xl lg:text-8xl"
+              className="font-display text-4xl font-bold text-foreground text-balance tracking-tight sm:text-5xl md:text-7xl lg:text-8xl"
               delay={0.5}
               staggerDelay={0.025}
             />
@@ -88,10 +88,13 @@ export function HeroSchematic({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.8 }}
-            className="mx-auto mb-6 max-w-2xl font-display text-lg text-muted-foreground md:mx-0 md:text-xl"
+            className="mx-auto mb-6 flex items-center gap-3 font-mono text-lg text-muted-foreground md:mx-0 md:text-xl"
           >
-            {headline ?? "Fullstack Developer"}
-            <span className="ml-0.5 inline-block h-[1.1em] w-[2px] translate-y-[-0.1em] bg-secondary" style={{ animation: "cursor-blink 1s step-end infinite" }} />
+            <span className="text-primary">&gt;</span>
+            <span className="flex items-center">
+              {headline ?? "Fullstack Developer"}
+              <span className="ml-0.5 inline-block h-[1.1em] w-[0.55em] bg-primary" style={{ animation: "cursor-blink 1s step-end infinite" }} />
+            </span>
           </motion.p>
 
           <motion.div

@@ -36,7 +36,7 @@ export function HolographicIdCard({
   const [isFlipped, setIsFlipped] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
   const [hueShift, setHueShift] = useState(0);
-  const [shadowColor, setShadowColor] = useState("rgba(86,217,196,0.3)");
+  const [shadowColor, setShadowColor] = useState("hsla(0 0% 100% / 0.22)");
 
   const rotateX = useSpring(0, { stiffness: 200, damping: 25 });
   const rotateY = useSpring(0, { stiffness: 200, damping: 25 });
@@ -60,16 +60,16 @@ export function HolographicIdCard({
     setMousePos({ x: normalX, y: normalY });
     setHueShift((normalX - 0.5) * 60);
 
-    // Dynamic shadow color based on mouse position (green → teal range only)
-    const hue = normalX * 40 + 140; // 140 (green) to 180 (teal)
-    setShadowColor(`hsla(${hue}, 50%, 55%, 0.2)`);
+    // Dynamic shadow color based on mouse position (white → acid range only)
+    const brightness = 0.15 + normalX * 0.2;
+    setShadowColor(`hsla(${82 - normalX * 82}, 100%, ${60 + normalX * 30}%, ${brightness})`);
   };
 
   const handleMouseLeave = () => {
     rotateX.set(0);
     rotateY.set(0);
     setHueShift(0);
-    setShadowColor("rgba(86,217,196,0.3)");
+    setShadowColor("hsla(0 0% 100% / 0.22)");
   };
 
   const handleFlip = () => {
@@ -122,17 +122,16 @@ export function HolographicIdCard({
             {/* Animated glow border */}
             <div className="absolute inset-0 rounded border-glow-animate" />
 
-            {/* Holographic sheen — subtle brand colors */}
+            {/* Monochrome sheen — white with acid hint */}
             <div
               className="pointer-events-none absolute inset-0 z-10 rounded mix-blend-soft-light"
               style={{
                 background: `conic-gradient(from ${hueShift + 120}deg at ${mousePos.x * 100}% ${mousePos.y * 100}%, 
-                  hsla(140, 60%, 60%, 0.3), 
-                  hsla(160, 55%, 55%, 0.3), 
-                  hsla(35, 60%, 55%, 0.3), 
-                  hsla(140, 60%, 60%, 0.3))`,
-                filter: `hue-rotate(${hueShift * 0.3}deg)`,
-                opacity: 0.18,
+                  hsla(0, 0%, 100%, 0.35), 
+                  hsla(82, 100%, 66%, 0.22), 
+                  hsla(0, 0%, 100%, 0.35), 
+                  hsla(0, 0%, 100%, 0.35))`,
+                opacity: 0.15,
               }}
             />
 
@@ -292,53 +291,53 @@ export function HolographicIdCard({
               <div className="shrink-0 rounded-xl border border-border bg-white p-2">
                 <svg viewBox="0 0 100 100" className="h-20 w-20">
                   <rect width="100" height="100" fill="white" />
-                  <rect x="5" y="5" width="25" height="25" rx="2" fill="#0E1A2B" />
+                  <rect x="5" y="5" width="25" height="25" rx="2" fill="#0A0A0A" />
                   <rect x="8" y="8" width="19" height="19" rx="1" fill="white" />
-                  <rect x="11" y="11" width="13" height="13" rx="1" fill="#0E1A2B" />
-                  <rect x="70" y="5" width="25" height="25" rx="2" fill="#0E1A2B" />
+                  <rect x="11" y="11" width="13" height="13" rx="1" fill="#0A0A0A" />
+                  <rect x="70" y="5" width="25" height="25" rx="2" fill="#0A0A0A" />
                   <rect x="73" y="8" width="19" height="19" rx="1" fill="white" />
-                  <rect x="76" y="11" width="13" height="13" rx="1" fill="#0E1A2B" />
-                  <rect x="5" y="70" width="25" height="25" rx="2" fill="#0E1A2B" />
+                  <rect x="76" y="11" width="13" height="13" rx="1" fill="#0A0A0A" />
+                  <rect x="5" y="70" width="25" height="25" rx="2" fill="#0A0A0A" />
                   <rect x="8" y="73" width="19" height="19" rx="1" fill="white" />
-                  <rect x="11" y="76" width="13" height="13" rx="1" fill="#0E1A2B" />
-                  <rect x="35" y="5" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="45" y="5" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="55" y="5" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="35" y="15" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="50" y="15" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="35" y="35" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="45" y="35" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="55" y="35" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="65" y="35" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="5" y="35" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="15" y="40" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="5" y="45" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="25" y="45" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="35" y="45" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="55" y="45" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="70" y="45" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="80" y="45" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="90" y="45" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="35" y="55" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="50" y="55" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="65" y="55" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="45" y="65" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="55" y="65" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="70" y="65" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="85" y="65" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="35" y="75" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="45" y="75" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="60" y="75" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="75" y="75" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="90" y="75" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="35" y="85" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="50" y="85" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="65" y="85" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="80" y="85" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="45" y="90" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="60" y="90" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="75" y="90" width="5" height="5" fill="#0E1A2B" />
-                  <rect x="90" y="90" width="5" height="5" fill="#0E1A2B" />
+                  <rect x="11" y="76" width="13" height="13" rx="1" fill="#0A0A0A" />
+                  <rect x="35" y="5" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="45" y="5" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="55" y="5" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="35" y="15" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="50" y="15" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="35" y="35" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="45" y="35" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="55" y="35" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="65" y="35" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="5" y="35" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="15" y="40" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="5" y="45" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="25" y="45" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="35" y="45" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="55" y="45" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="70" y="45" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="80" y="45" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="90" y="45" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="35" y="55" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="50" y="55" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="65" y="55" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="45" y="65" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="55" y="65" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="70" y="65" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="85" y="65" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="35" y="75" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="45" y="75" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="60" y="75" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="75" y="75" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="90" y="75" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="35" y="85" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="50" y="85" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="65" y="85" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="80" y="85" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="45" y="90" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="60" y="90" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="75" y="90" width="5" height="5" fill="#0A0A0A" />
+                  <rect x="90" y="90" width="5" height="5" fill="#0A0A0A" />
                 </svg>
               </div>
 

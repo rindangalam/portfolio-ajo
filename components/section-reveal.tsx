@@ -37,16 +37,16 @@ export function SectionReveal({
     <motion.div
       ref={ref}
       className={cn(className)}
-      initial={{ opacity: 0, x: offset.x, y: offset.y }}
+      initial={{ opacity: 0, x: offset.x, y: offset.y, filter: "blur(8px)" }}
       animate={
         isInView
-          ? { opacity: 1, x: 0, y: 0 }
-          : { opacity: 0, x: offset.x, y: offset.y }
+          ? { opacity: 1, x: 0, y: 0, filter: "blur(0px)" }
+          : { opacity: 0, x: offset.x, y: offset.y, filter: "blur(8px)" }
       }
       transition={{
         duration,
         delay,
-        ease: [0.25, 0.46, 0.45, 0.94],
+        ease: [0.32, 0.72, 0, 1],
       }}
     >
       {children}

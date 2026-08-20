@@ -85,7 +85,7 @@ function FeaturedProjectCard({
       {/* Image */}
       <div className={reversed ? "md:order-2" : ""}>
         <Link href={`/projects/${project.slug}`} className="group block">
-          <div className="group/image relative overflow-hidden rounded border border-border bg-card transition-all duration-500 ease-premium hover:border-primary/30 hover:shadow-[0_0_30px_hsl(var(--primary)/0.1)]">
+          <div className="group/image relative overflow-hidden rounded border border-border bg-card transition-all duration-500 ease-premium hover:border-primary/30 hover:shadow-[0_0_40px_hsl(82_100%_66%/0.15)]">
             {project.image_url ? (
               isVideo(project.image_url) ? (
                 <video
@@ -145,7 +145,7 @@ function FeaturedProjectCard({
               href={project.repo_url}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 rounded-lg border border-secondary/20 bg-secondary/5 px-3 py-1.5 font-mono text-[11px] text-secondary transition-all hover:bg-secondary/10 hover:shadow-[0_0_15px_hsl(var(--secondary)/0.3)]"
+              className="flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-[11px] text-white/80 transition-all hover:bg-white/10"
             >
               <Github size={12} /> Code
             </a>
@@ -155,7 +155,7 @@ function FeaturedProjectCard({
               href={project.live_url}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 rounded-lg border border-accent/20 bg-accent/5 px-3 py-1.5 font-mono text-[11px] text-accent transition-all hover:bg-accent/10 hover:shadow-[0_0_15px_hsl(var(--accent)/0.3)]"
+              className="flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-1.5 font-mono text-[11px] text-primary transition-all hover:bg-primary/15 hover:shadow-[0_0_15px_hsl(82_100%_66%/0.25)]"
             >
               <ExternalLink size={12} /> Live Demo
             </a>

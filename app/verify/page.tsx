@@ -25,7 +25,7 @@ const STATUS: Record<string, { icon: string; title: string; description: string 
 
 function VerifyFallback() {
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-[#0a0e17] px-5">
+    <div className="flex min-h-dvh items-center justify-center bg-background px-5">
       <div className="glass w-full max-w-md rounded-2xl p-8 text-center">
         <div className="mb-4 h-12 w-12 animate-pulse rounded-full bg-muted-foreground/20 mx-auto" />
         <div className="mb-2 h-6 w-48 animate-pulse rounded bg-muted-foreground/20 mx-auto" />
@@ -44,7 +44,7 @@ async function VerifyInner({
   const info = STATUS[status ?? ""] ?? STATUS.invalid;
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-[#0a0e17] px-5">
+    <div className="flex min-h-dvh items-center justify-center bg-background px-5">
       <div className="glass w-full max-w-md rounded-2xl p-8 text-center">
         <div className="text-5xl mb-4">{info.icon}</div>
         <h1 className="font-display text-2xl font-bold text-foreground mb-2">
@@ -55,8 +55,7 @@ async function VerifyInner({
         </p>
         <a
           href="/"
-          className="mt-6 inline-block rounded-lg bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] px-6 py-3 font-display text-sm font-bold text-background transition-all hover:brightness-110"
-          style={{ animation: "gradient-shift 4s ease infinite" }}
+          className="mt-6 inline-block rounded-lg bg-primary px-6 py-3 font-display text-sm font-bold text-primary-foreground transition-all duration-500 ease-premium hover:shadow-[0_0_40px_hsl(82_100%_66%/0.35)] hover:brightness-110"
         >
           Back to Home
         </a>

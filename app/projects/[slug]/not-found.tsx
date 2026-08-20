@@ -8,7 +8,7 @@ export default function ProjectNotFound() {
         <p className="retro-border mb-6 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-accent">
           &gt; error 404: project not found
         </p>
-        <h1 className="font-display text-7xl font-bold text-gradient-animated glow-text">
+        <h1 className="font-display text-7xl font-bold text-foreground">
           404
         </h1>
         <p className="mt-4 font-mono text-sm text-muted-foreground">

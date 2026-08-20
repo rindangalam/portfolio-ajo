@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface GlowCardProps {
@@ -18,33 +18,29 @@ export function GlowCard({
   contentClassName,
   bezel = true,
 }: GlowCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
+  const shellRef = useRef<HTMLDivElement>(null);
+  const [spot, setSpot] = useState({ x: 50, y: 50, on: false });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = shellRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    setSpot({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+      on: true,
+    });
+  };
 
   if (!bezel) {
     return (
       <div
         className={cn(
           "retro-card-bevel rounded relative bg-card p-6 transition-all duration-500 ease-premium",
-          "hover:shadow-[4px_4px_0px_hsl(var(--primary)/0.4),0_0_20px_hsl(var(--primary)/0.08)]",
+          "hover:shadow-[4px_4px_0px_hsl(0_0%_0%/0.5),0_0_30px_hsl(0_0%_100%/0.05)]",
           className
         )}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
-        {isHovered && (
-          <div
-            className="pointer-events-none absolute inset-0 rounded opacity-30 crt-overlay"
-            style={{
-              backgroundImage: `repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 1px,
-                rgba(0, 0, 0, 0.08) 1px,
-                rgba(0, 0, 0, 0.08) 2px
-              )`,
-            }}
-          />
-        )}
         <div className="relative z-10">{children}</div>
       </div>
     );
@@ -52,29 +48,23 @@ export function GlowCard({
 
   return (
     <div
+      ref={shellRef}
       className={cn(
         "bezel-shell transition-all duration-500 ease-premium",
-        "hover:shadow-[4px_4px_0px_hsl(var(--primary)/0.2),0_0_30px_hsl(var(--primary)/0.08)]",
+        "hover:shadow-[0_0_40px_hsl(0_0%_100%/0.06)]",
         className
       )}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => setSpot((s) => ({ ...s, on: false }))}
     >
       <div className={cn("bezel-core h-full", contentClassName)}>
-        {isHovered && (
-          <div
-            className="pointer-events-none absolute inset-0 rounded opacity-30 crt-overlay"
-            style={{
-              backgroundImage: `repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 1px,
-                rgba(0, 0, 0, 0.08) 1px,
-                rgba(0, 0, 0, 0.08) 2px
-              )`,
-            }}
-          />
-        )}
+        <div
+          className="pointer-events-none absolute inset-0 rounded opacity-0 transition-opacity duration-500 ease-premium"
+          style={{
+            opacity: spot.on ? 1 : 0,
+            background: `radial-gradient(320px circle at ${spot.x}% ${spot.y}%, hsl(82 100% 66% / 0.08), transparent 60%)`,
+          }}
+        />
         <div className="relative z-10">{children}</div>
       </div>
     </div>

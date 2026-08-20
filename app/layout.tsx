@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { VT323, Inter, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { CustomCursor } from "@/components/custom-cursor";
 import { ScrollProgress } from "@/components/scroll-progress";
 import "./globals.css";
@@ -21,18 +21,11 @@ export const metadata: Metadata = {
   },
 };
 
-const vt323 = VT323({
-  variable: "--font-vt323",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   display: "swap",
   subsets: ["latin"],
-  weight: ["400"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  display: "swap",
-  subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -50,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${vt323.variable} ${inter.variable} ${jetbrainsMono.variable} font-body antialiased`}
+        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} font-body antialiased`}
       >
         <a
           href="#main-content"
@@ -60,7 +53,6 @@ export default function RootLayout({
         </a>
         <ScrollProgress />
         <CustomCursor />
-        <div className="crt-overlay pointer-events-none fixed inset-0 z-30" />
         {children}
       </body>
     </html>

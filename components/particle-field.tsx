@@ -82,7 +82,7 @@ export function ParticleField({ className, particleCount = 50, galaxy = false }:
 
       particles.push({
         x, y, vx, vy, size, baseOpacity,
-        hue: Math.random() > 0.75 ? 35 : Math.random() > 0.5 ? 160 : 140,
+        hue: Math.random() > 0.85 ? 82 : 0,
         twinklePhase: Math.random() * Math.PI * 2,
         twinkleSpeed: Math.random() * 2 + 0.5,
         stationary: isStationary,
@@ -110,13 +110,13 @@ export function ParticleField({ className, particleCount = 50, galaxy = false }:
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 80%, 65%, ${p.baseOpacity * twinkle})`;
+        ctx.fillStyle = `hsla(${p.hue}, ${p.hue === 82 ? "100%" : "0%"}, ${p.hue === 82 ? "66%" : "85%"}, ${p.baseOpacity * twinkle})`;
         ctx.fill();
 
         if (galaxy && p.size > 3) {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = `hsla(${p.hue}, 80%, 65%, ${p.baseOpacity * 0.15 * twinkle})`;
+          ctx.fillStyle = `hsla(${p.hue}, ${p.hue === 82 ? "100%" : "0%"}, ${p.hue === 82 ? "66%" : "85%"}, ${p.baseOpacity * 0.15 * twinkle})`;
           ctx.fill();
         }
       }

@@ -8,7 +8,7 @@ export default function NotFound() {
         <p className="retro-border mb-6 px-4 py-1.5 font-mono text-xs uppercase tracking-widest text-accent">
           &gt; error 404: page not found
         </p>
-        <h1 className="font-display text-8xl font-bold text-gradient-animated glow-text sm:text-9xl">
+        <h1 className="font-display text-8xl font-bold text-foreground sm:text-9xl">
           404
         </h1>
         <p className="mt-6 font-mono text-sm leading-relaxed text-muted-foreground">

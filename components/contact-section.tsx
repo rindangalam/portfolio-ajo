@@ -112,7 +112,7 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                   <input
                     name="name"
                     required
-                    className="w-full rounded-lg border border-border bg-background/50 px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground/50 transition-all hover:border-secondary/40 focus:border-transparent focus:ring-2 focus:ring-primary/30 focus:outline-none"
+                    className="w-full rounded-lg border border-border bg-background/50 px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground/50 transition-all hover:border-white/40 focus:border-transparent focus:ring-2 focus:ring-primary/30 focus:outline-none"
                     placeholder="Your name"
                   />
                 </div>
@@ -124,7 +124,7 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                     name="email"
                     type="email"
                     required
-                    className="w-full rounded-lg border border-border bg-background/50 px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground/50 transition-all hover:border-secondary/40 focus:border-transparent focus:ring-2 focus:ring-primary/30 focus:outline-none"
+                    className="w-full rounded-lg border border-border bg-background/50 px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground/50 transition-all hover:border-white/40 focus:border-transparent focus:ring-2 focus:ring-primary/30 focus:outline-none"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -136,7 +136,7 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                     name="message"
                     required
                     rows={4}
-                    className="w-full resize-none rounded-lg border border-border bg-background/50 px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground/50 transition-all hover:border-secondary/40 focus:border-transparent focus:ring-2 focus:ring-primary/30 focus:outline-none"
+                    className="w-full resize-none rounded-lg border border-border bg-background/50 px-4 py-2.5 text-sm text-foreground placeholder-muted-foreground/50 transition-all hover:border-white/40 focus:border-transparent focus:ring-2 focus:ring-primary/30 focus:outline-none"
                     placeholder="Your message..."
                   />
                 </div>
@@ -144,8 +144,7 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                 <button
                   type="submit"
                   disabled={formState === "sending"}
-                  className="group relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] px-6 py-3 font-display text-sm font-bold text-background transition-all duration-500 ease-premium hover:shadow-[0_0_30px_hsl(var(--primary)/0.4)] hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
-                  style={{ animation: "gradient-shift 4s ease infinite" }}
+                  className="group relative w-full overflow-hidden rounded-lg bg-primary px-6 py-3 font-display text-sm font-bold text-primary-foreground transition-all duration-500 ease-premium hover:shadow-[0_0_40px_hsl(82_100%_66%/0.35)] hover:brightness-110 active:scale-[0.98] disabled:opacity-60"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     {formState === "sending" ? (
@@ -164,7 +163,7 @@ export function ContactSection({ socialLinks, email }: ContactSectionProps) {
                       "Try Again"
                     ) : (
                       <>
-                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-background/15 transition-transform duration-500 ease-premium group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-105">
+                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-foreground/10 transition-transform duration-500 ease-premium group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-105">
                           <Send className="h-4 w-4" />
                         </span>
                         Send Message

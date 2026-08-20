@@ -150,8 +150,8 @@ export function Navbar() {
                     className={cn(
                       "group flex items-baseline gap-4 py-2 font-display text-5xl font-bold transition-colors duration-300 ease-premium",
                       activeSection === item.id
-                        ? "text-gradient"
-                        : "text-foreground hover:text-secondary"
+                        ? "text-primary"
+                        : "text-foreground hover:text-white/80"
                     )}
                   >
                     <span className="font-mono text-xs text-muted-foreground/60">
@@ -167,7 +167,7 @@ export function Navbar() {
                 transition={{ delay: 0.08 * NAV_ITEMS.length + 0.2, duration: 0.6, ease: EASE_PREMIUM }}
                 className="mt-12 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60"
               >
-                <span className="text-secondary">$</span> rindang.alam.dev
+                <span className="text-primary">$</span> rindang.alam.dev
               </motion.div>
             </div>
           </motion.div>

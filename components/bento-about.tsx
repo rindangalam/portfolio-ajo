@@ -23,11 +23,11 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  frontend: "hsl(140, 80%, 60%)",
-  backend: "hsl(160, 75%, 55%)",
-  database: "hsl(35, 85%, 60%)",
-  devops: "hsl(200, 70%, 55%)",
-  language: "hsl(270, 70%, 60%)",
+  frontend: "hsl(82, 100%, 66%)",
+  backend: "hsl(0, 0%, 62%)",
+  database: "hsl(0, 0%, 72%)",
+  devops: "hsl(0, 0%, 55%)",
+  language: "hsl(0, 0%, 78%)",
   other: "hsl(80, 10%, 50%)",
 };
 
