@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { id: "hero", label: "Home" },
-  { id: "about", label: "About" },
-  { id: "projects", label: "Projects" },
-  { id: "experience", label: "Experience" },
-  { id: "contact", label: "Contact" },
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/projects", label: "Projects" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const EASE_PREMIUM = [0.32, 0.72, 0, 1] as const;
@@ -34,7 +35,7 @@ function Hamburger({ open }: { open: boolean }) {
 }
 
 export function Navbar() {
-  const [activeSection, setActiveSection] = useState("hero");
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -45,40 +46,11 @@ export function Navbar() {
   });
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        }
-      },
-      { rootMargin: "-40% 0px -40% 0px" }
-    );
+    setIsMobileOpen(false);
+  }, [pathname]);
 
-    const sectionIds = NAV_ITEMS.map((item) => item.id);
-    const observed = new WeakSet<Element>();
-
-    const observeSections = () => {
-      for (const id of sectionIds) {
-        const el = document.getElementById(id);
-        if (el && !observed.has(el)) {
-          observer.observe(el);
-          observed.add(el);
-        }
-      }
-    };
-
-    observeSections();
-
-    const mutationObserver = new MutationObserver(observeSections);
-    mutationObserver.observe(document.body, { childList: true, subtree: true });
-
-    return () => {
-      observer.disconnect();
-      mutationObserver.disconnect();
-    };
-  }, []);
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <>
@@ -89,24 +61,24 @@ export function Navbar() {
         )}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5">
-          <a href="#hero" className="font-display text-lg font-bold text-gradient-animated">
+          <Link href="/" className="font-display text-lg font-bold text-gradient-animated">
             RANM
-          </a>
+          </Link>
 
           <div className="hidden items-center gap-1 md:flex">
             {NAV_ITEMS.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
+              <Link
+                key={item.href}
+                href={item.href}
                 className={cn(
                   "relative rounded-md px-3 py-1.5 font-mono text-xs transition-all duration-300 ease-premium",
-                  activeSection === item.id
+                  isActive(item.href)
                     ? "bg-secondary/15 font-semibold text-secondary"
                     : "text-muted-foreground hover:bg-secondary/5 hover:text-foreground"
                 )}
               >
                 <span className="relative z-10">{item.label}</span>
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -140,25 +112,28 @@ export function Navbar() {
               </div>
               <div className="flex flex-col gap-1">
                 {NAV_ITEMS.map((item, i) => (
-                  <motion.a
-                    key={item.id}
-                    href={`#${item.id}`}
-                    onClick={() => setIsMobileOpen(false)}
+                  <motion.div
+                    key={item.href}
                     initial={{ opacity: 0, y: 48 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.08 * i + 0.15, duration: 0.6, ease: EASE_PREMIUM }}
-                    className={cn(
-                      "group flex items-baseline gap-4 py-2 font-display text-5xl font-bold transition-colors duration-300 ease-premium",
-                      activeSection === item.id
-                        ? "text-primary"
-                        : "text-foreground hover:text-white/80"
-                    )}
                   >
-                    <span className="font-mono text-xs text-muted-foreground/60">
-                      0{i + 1}
-                    </span>
-                    {item.label}
-                  </motion.a>
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsMobileOpen(false)}
+                      className={cn(
+                        "group flex items-baseline gap-4 py-2 font-display text-5xl font-bold transition-colors duration-300 ease-premium",
+                        isActive(item.href)
+                          ? "text-primary"
+                          : "text-foreground hover:text-white/80"
+                      )}
+                    >
+                      <span className="font-mono text-xs text-muted-foreground/60">
+                        0{i + 1}
+                      </span>
+                      {item.label}
+                    </Link>
+                  </motion.div>
                 ))}
               </div>
               <motion.div

@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
+import { PageBackground } from "@/components/page-background";
 import { CustomCursor } from "@/components/custom-cursor";
 import { ScrollProgress } from "@/components/scroll-progress";
+import { getSocialLinks } from "@/lib/data";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -35,6 +40,16 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
+async function FooterWrapper() {
+  let socialLinks: { platform: string; url: string }[] = [];
+  try {
+    socialLinks = await getSocialLinks();
+  } catch {
+    // fallback — render footer anyway
+  }
+  return <Footer socialLinks={socialLinks} />;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -53,7 +68,14 @@ export default function RootLayout({
         </a>
         <ScrollProgress />
         <CustomCursor />
+        <Suspense fallback={<nav className="h-16 w-full" />}>
+          <Navbar />
+        </Suspense>
+        <PageBackground />
         {children}
+        <Suspense fallback={<footer className="relative z-10 border-t border-border/30 py-12" />}>
+          <FooterWrapper />
+        </Suspense>
       </body>
     </html>
   );
