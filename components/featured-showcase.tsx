@@ -71,7 +71,6 @@ function FeaturedProjectCard({
 
   return (
     <div className="relative">
-      <div className="mb-6 h-1 w-full rounded-full bg-gradient-to-r from-primary via-secondary to-accent" />
       <span className="pointer-events-none absolute -right-6 -top-6 select-none font-display text-[140px] font-bold leading-none text-foreground/[0.03]">
         {String(index + 1).padStart(2, "0")}
       </span>
