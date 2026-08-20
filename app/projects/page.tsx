@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { ProjectCard } from "@/components/project-card";
 import { FeaturedShowcase } from "@/components/featured-showcase";
 import { SectionReveal } from "@/components/section-reveal";
+import { PageTransition } from "@/components/page-transition";
 import { getProjects, getFeaturedProjects } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -24,65 +25,74 @@ function SectionSkeleton() {
   );
 }
 
-export default async function ProjectsPage() {
-  const [{ projects, error }, featured] = await Promise.all([
-    getProjects(),
-    getFeaturedProjects(),
-  ]);
+async function FeaturedSection() {
+  const featured = await getFeaturedProjects();
+  if (featured.length === 0) return null;
+  return <FeaturedShowcase projects={featured} />;
+}
+
+async function AllProjectsSection() {
+  const { projects, error } = await getProjects();
+
+  if (error) {
+    return <p className="text-center text-sm text-red-400">Failed to load projects: {error.message}</p>;
+  }
+
+  if (projects.length === 0) {
+    return <p className="text-center text-sm text-muted-foreground">No published projects yet.</p>;
+  }
 
   return (
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+      {projects.map((project, i) => (
+        <ProjectCard key={project.id} project={project} index={i} />
+      ))}
+    </div>
+  );
+}
+
+export default function ProjectsPage() {
+  return (
     <div className="bg-grid flex min-h-dvh flex-col">
-      <main id="main-content" className="relative z-10 flex-1">
-        <div className="pt-28">
-          <SectionReveal>
-            <div className="mb-4 flex items-center justify-center gap-3">
-              <div className="h-px w-8 bg-gradient-to-r from-transparent to-secondary/40" />
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-gradient">
-                Work
-              </span>
-              <div className="h-px w-8 bg-gradient-to-l from-transparent to-secondary/40" />
-            </div>
-            <h1 className="mb-12 text-center font-display text-4xl font-bold text-foreground md:text-5xl">
-              Selected Projects
-            </h1>
-          </SectionReveal>
-        </div>
-
-        {featured.length > 0 && (
-          <Suspense fallback={<SectionSkeleton />}>
-            <FeaturedShowcase projects={featured} />
-          </Suspense>
-        )}
-
-        <section className="px-5 py-20">
-          <div className="mx-auto max-w-7xl">
+      <PageTransition>
+        <main id="main-content" className="relative z-10 flex-1">
+          <div className="pt-28">
             <SectionReveal>
-              <div className="mb-12 flex items-center justify-center gap-3">
+              <div className="mb-4 flex items-center justify-center gap-3">
                 <div className="h-px w-8 bg-gradient-to-r from-transparent to-secondary/40" />
                 <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-gradient">
-                  All Projects
+                  Work
                 </span>
                 <div className="h-px w-8 bg-gradient-to-l from-transparent to-secondary/40" />
               </div>
+              <h1 className="mb-12 text-center font-display text-4xl font-bold text-foreground md:text-5xl">
+                Selected Projects
+              </h1>
             </SectionReveal>
-            {error ? (
-              <p className="text-center text-sm text-red-400">
-                Failed to load projects: {error.message}
-              </p>
-            ) : projects.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground">
-                No published projects yet.
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                {projects.map((project, i) => (
-                  <ProjectCard key={project.id} project={project} index={i} />
-                ))}
-              </div>
-            )}
           </div>
-        </section>
-      </main>
+
+          <Suspense fallback={<SectionSkeleton />}>
+            <FeaturedSection />
+          </Suspense>
+
+          <section className="px-5 py-20">
+            <div className="mx-auto max-w-7xl">
+              <SectionReveal>
+                <div className="mb-12 flex items-center justify-center gap-3">
+                  <div className="h-px w-8 bg-gradient-to-r from-transparent to-secondary/40" />
+                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-gradient">
+                    All Projects
+                  </span>
+                  <div className="h-px w-8 bg-gradient-to-l from-transparent to-secondary/40" />
+                </div>
+              </SectionReveal>
+              <Suspense fallback={<SectionSkeleton />}>
+                <AllProjectsSection />
+              </Suspense>
+            </div>
+          </section>
+        </main>
+      </PageTransition>
     </div>
   );
 }
