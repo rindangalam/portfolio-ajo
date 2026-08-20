@@ -137,7 +137,7 @@ export default function BlogPostPage({
   return (
     <div className="bg-grid flex min-h-dvh flex-col">
       <PageTransition>
-        <main id="main-content" className="relative z-10 flex-1" data-nav-section="blog">
+        <main id="main-content" className="relative z-10 flex-1">
           <div className="mx-auto max-w-3xl px-5 pt-32 pb-24">
             <BlogReadingProgress>
               <Suspense fallback={<DetailSkeleton />}>

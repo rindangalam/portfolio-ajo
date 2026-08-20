@@ -98,31 +98,31 @@ export default function Home() {
     <div className="bg-grid flex min-h-dvh flex-col">
       <PageTransition>
         <main id="main-content" className="relative z-10 flex-1">
-          <div data-nav-section="home">
+          <div>
             <Suspense fallback={<HeroSkeleton />}>
               <ProfileHeroSection />
             </Suspense>
           </div>
 
-          <div data-nav-section="home">
+          <div>
             <Suspense fallback={<SectionSkeleton />}>
               <TechMarqueeSection />
             </Suspense>
           </div>
 
-          <div data-nav-section="home">
+          <div>
             <Suspense fallback={<SectionSkeleton />}>
               <StatsSectionWrapper />
             </Suspense>
           </div>
 
-          <div data-nav-section="projects">
+          <div>
             <Suspense fallback={<SectionSkeleton />}>
               <FeaturedTeaser />
             </Suspense>
           </div>
 
-          <section data-nav-section="projects" className="px-5 pb-24">
+          <section className="px-5 pb-24">
             <div className="mx-auto max-w-7xl">
               <SectionReveal>
                 <div className="flex justify-center">

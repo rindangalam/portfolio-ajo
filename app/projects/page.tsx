@@ -48,7 +48,7 @@ export default function ProjectsPage() {
   return (
     <div className="bg-grid flex min-h-dvh flex-col">
       <PageTransition>
-        <main id="main-content" className="relative z-10 flex-1" data-nav-section="projects">
+        <main id="main-content" className="relative z-10 flex-1">
           <div className="pt-28">
             <SectionReveal>
               <div className="mb-4 flex items-center justify-center gap-3">
