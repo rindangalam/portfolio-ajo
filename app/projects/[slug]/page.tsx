@@ -1,7 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ProjectDetailContent } from "./project-detail-content";
@@ -100,18 +98,6 @@ export default function ProjectDetailPage({ params }: Props) {
     <div className="relative flex min-h-dvh flex-col">
       <GradientMesh />
       <ParticleField particleCount={20} />
-
-      <nav className="sticky top-0 z-50 w-full glass">
-        <div className="mx-auto flex h-16 max-w-7xl items-center px-5">
-          <Link
-            href="/#projects"
-            className="flex items-center gap-2 font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
-          >
-            <ArrowLeft size={14} />
-            All Projects
-          </Link>
-        </div>
-      </nav>
 
       <main className="relative z-10 flex-1">
         <div className="mx-auto max-w-7xl px-5 py-12">
