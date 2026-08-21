@@ -25,6 +25,10 @@ export function TechMarquee({ skills }: TechMarqueeProps) {
   const row1 = uniqueSkills.slice(0, Math.ceil(uniqueSkills.length / 2));
   const row2 = uniqueSkills.slice(Math.ceil(uniqueSkills.length / 2));
 
+  // Repeat 4x so track is 4x content; -50% animation = 2x content (always > viewport)
+  const row1Repeated = [...row1, ...row1, ...row1, ...row1];
+  const row2Repeated = [...row2, ...row2, ...row2, ...row2];
+
   return (
     <section className="relative overflow-hidden py-10">
       <SectionReveal>
@@ -41,7 +45,7 @@ export function TechMarquee({ skills }: TechMarqueeProps) {
         {/* Row 1 — scrolls left */}
         <div className="marquee-container">
           <div className="marquee-track marquee-left">
-            {[...row1, ...row1].map((skill, i) => (
+            {row1Repeated.map((skill, i) => (
               <span
                 key={`r1-${i}`}
                 className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-1.5 font-mono text-xs transition-all duration-300 hover:scale-105 hover:shadow-[0_0_12px_hsl(var(--secondary)/0.2)] ${CATEGORY_COLORS[skill.category] ?? CATEGORY_COLORS.other}`}
@@ -55,7 +59,7 @@ export function TechMarquee({ skills }: TechMarqueeProps) {
         {/* Row 2 — scrolls right */}
         <div className="marquee-container">
           <div className="marquee-track marquee-right">
-            {[...row2, ...row2].map((skill, i) => (
+            {row2Repeated.map((skill, i) => (
               <span
                 key={`r2-${i}`}
                 className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-1.5 font-mono text-xs transition-all duration-300 hover:scale-105 hover:shadow-[0_0_12px_hsl(var(--secondary)/0.2)] ${CATEGORY_COLORS[skill.category] ?? CATEGORY_COLORS.other}`}

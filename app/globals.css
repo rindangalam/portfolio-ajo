@@ -347,6 +347,7 @@ html {
 .marquee-track {
   display: flex;
   width: max-content;
+  min-width: 200vw;
   gap: 0.75rem;
 }
 
