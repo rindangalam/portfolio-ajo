@@ -223,6 +223,7 @@
     background: hsl(0 0% 100% / 0.03);
     border: 1px solid hsl(0 0% 100% / 0.07);
     box-shadow: inset 0 1px 1px hsl(0 0% 100% / 0.05);
+    overflow: hidden;
   }
 
   .bezel-core {
@@ -231,6 +232,7 @@
     background: hsl(var(--card));
     border: 1px solid hsl(0 0% 100% / 0.1);
     box-shadow: inset 0 1px 1px hsl(0 0% 100% / 0.06);
+    overflow: hidden;
   }
 
   .gradient-border {
